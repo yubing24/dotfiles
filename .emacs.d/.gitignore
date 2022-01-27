@@ -1,12 +1,5 @@
-# no ssh files
-ssh/
-.ssh/
-
-# temporary files
 *~
 \#*\#
-
-# no emacs custom files
 ac-comphist.dat
 auto-save-list/
 bookmarks

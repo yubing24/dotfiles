@@ -1,0 +1,127 @@
+* GCC Emacs
+My personal configuration for my GCC Emacs build. This configuration may not
+work well with other pre-built Emacs
+
+This repository documents my jounery back to becoming a regular Emacs user.
+
+* Setup
+
+** Build & Compile Emacs
+*** Follow instructions to download and build Emacs locally:
+#+begin_src sh
+  $ mkdir -p ~/Programs/
+  $ cd ~/Programs/
+  $ git clone git://git.savannah.gnu.org/emacs.git
+  $ cd emacs
+  $ ./autogen.sh
+  $ ./configure \
+      --with-native-compilation  \
+      --with-gnutls \
+      --with-imagemagick \
+      --with-jpeg \
+      --with-png \
+      --with-rsvg \
+      --with-tiff \
+      --with-wide-int \
+      --with-xft \
+      --with-xml2 \
+      --with-xpm \
+      prefix=/usr/local
+  $ sudo make install
+#+end_src
+
+There might be other libraries that need to be installed while running the commands above.
+*** Verify that Emacs is correctly compiled
+
+Run snippet below to verify that native compilation is available:
+#+begin_src emacs-lisp
+  (if (and (fboundp 'native-comp-available-p)
+       (native-comp-available-p))
+  (message "Native compilation is available")
+(message "Native complation is *not* available"))
+#+end_src
+
+#+RESULTS:
+: Native compilation is available
+
+Run snippet below to verify that JSON can be compiled natively as well:
+#+begin_src emacs-lisp
+      (if (functionp 'json-serialize)
+	  (message "Native JSON is available")
+	(message "Native JSON is *not* available"))
+#+end_src
+
+#+RESULTS:
+: Native JSON is available
+
+** Clone the repository to `$HOME/.emacs.d/`
+
+** Change directory to project root
+
+** Initialize `custom.el`: `$ touch custom.el`
+
+* Edit
+
+** Search
+Several tools need to be installed to allow fast project traversal and string search.
+
+** Ag
+
+*** Install
+
+**** On Linux: `$ sudo apt install silversearcher-ag`
+
+****  On Mac: `$ brew install the_silver_searcher`
+
+* Configurations
+  * Set up the `.agignore` file, or a global `$HOME/.agignore` file
+  * Install `ag` melpa
+
+
+** Language/Framework Server Protocols
+
+*** Angular
+Run
+#+begin_src bash
+sudo npm install -g @angular/language-service@next typescript @angular/language-server`
+#+end_src
+
+***  Go
+Make sure `gopls` is installed and `$GOPATH/bin` is in emacs' executable paths.
+
+*** JSON
+Run:
+#+begin_src bash
+sudo npm install -g vscode-json-languageserver
+#+end_src
+
+#+RESULTS:
+
+
+***  PHP (language server not aways working)
+
+If running into issue `LSP :: example_file_name no in project or it is blacklisted`, add project root
+to LSP workspace or remove it from the blacklist:
+`M-x lsp-workspace-blacklist-remove` or `M-s lsp-workspace-folders-add`.
+
+
+***  Python3
+After `elpy` is added to emacs, also install addtional system requirements:
+`$ sudo apt install python3-jedi black python3-autopep8 yapf3 python3-yapf`
+
+Then restart Emacs.
+
+
+***  TypeScript/Javascript
+
+Install TypeScript language server:
+#+BEGIN_SRC bash
+$ sudo npm i -g typescript-language-server
+$ sudo npm i -g typescript
+#+END_SRC
+
+
+Then in Emacs, install LSP server:
+#+begin_src
+M-x lsp-install-server RET jsts-ls RET
+#+end_src

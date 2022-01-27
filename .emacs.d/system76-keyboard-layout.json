@@ -1,0 +1,349 @@
+{
+  "model": "system76/lemp9",
+  "version": 1,
+  "map": {
+    "K0B": [
+      "F11",
+      "AIRPLANE_MODE"
+    ],
+    "K0C": [
+      "F12",
+      "SUSPEND"
+    ],
+    "K4A": [
+      "SLASH",
+      "SLASH"
+    ],
+    "K20": [
+      "TAB",
+      "TAB"
+    ],
+    "K38": [
+      "K",
+      "K"
+    ],
+    "K0A": [
+      "F10",
+      "CAMERA_TOGGLE"
+    ],
+    "K43": [
+      "C",
+      "C"
+    ],
+    "K46": [
+      "N",
+      "N"
+    ],
+    "K33": [
+      "D",
+      "D"
+    ],
+    "K05": [
+      "F5",
+      "VOLUME_DOWN"
+    ],
+    "K35": [
+      "G",
+      "G"
+    ],
+    "K41": [
+      "Z",
+      "Z"
+    ],
+    "K62": [
+      "RIGHT",
+      "RIGHT"
+    ],
+    "K52": [
+      "LEFT_SUPER",
+      "LEFT_SUPER"
+    ],
+    "K0E": [
+      "END",
+      "END"
+    ],
+    "K54": [
+      "SPACE",
+      "SPACE"
+    ],
+    "K31": [
+      "A",
+      "A"
+    ],
+    "K16": [
+      "6",
+      "6"
+    ],
+    "K34": [
+      "F",
+      "F"
+    ],
+    "K27": [
+      "U",
+      "U"
+    ],
+    "K13": [
+      "3",
+      "3"
+    ],
+    "K1D": [
+      "BKSP",
+      "BKSP"
+    ],
+    "K1B": [
+      "MINUS",
+      "MINUS"
+    ],
+    "K4B": [
+      "RIGHT_SHIFT",
+      "RIGHT_SHIFT"
+    ],
+    "K18": [
+      "8",
+      "8"
+    ],
+    "K00": [
+      "ESC",
+      "ESC"
+    ],
+    "K36": [
+      "H",
+      "H"
+    ],
+    "K44": [
+      "V",
+      "V"
+    ],
+    "K15": [
+      "5",
+      "5"
+    ],
+    "K48": [
+      "COMMA",
+      "COMMA"
+    ],
+    "K21": [
+      "Q",
+      "Q"
+    ],
+    "K28": [
+      "I",
+      "I"
+    ],
+    "K2B": [
+      "BRACE_OPEN",
+      "BRACE_OPEN"
+    ],
+    "K60": [
+      "LEFT",
+      "LEFT"
+    ],
+    "K42": [
+      "X",
+      "X"
+    ],
+    "K17": [
+      "7",
+      "7"
+    ],
+    "K25": [
+      "T",
+      "T"
+    ],
+    "K51": [
+      "FN",
+      "FN"
+    ],
+    "K55": [
+      "RIGHT_ALT",
+      "RIGHT_ALT"
+    ],
+    "K0D": [
+      "HOME",
+      "HOME"
+    ],
+    "K2C": [
+      "BRACE_CLOSE",
+      "BRACE_CLOSE"
+    ],
+    "K2A": [
+      "P",
+      "P"
+    ],
+    "K37": [
+      "J",
+      "J"
+    ],
+    "K0G": [
+      "DEL",
+      "DEL"
+    ],
+    "K22": [
+      "W",
+      "W"
+    ],
+    "K3B": [
+      "QUOTE",
+      "QUOTE"
+    ],
+    "K47": [
+      "M",
+      "M"
+    ],
+    "K57": [
+      "LEFT",
+      "PGUP"
+    ],
+    "K06": [
+      "F6",
+      "VOLUME_UP"
+    ],
+    "K2D": [
+      "BACKSLASH",
+      "BACKSLASH"
+    ],
+    "K3A": [
+      "SEMICOLON",
+      "SEMICOLON"
+    ],
+    "K23": [
+      "E",
+      "E"
+    ],
+    "K40": [
+      "LEFT_SHIFT",
+      "LEFT_SHIFT"
+    ],
+    "K58": [
+      "UP",
+      "UP"
+    ],
+    "K1A": [
+      "0",
+      "0"
+    ],
+    "K02": [
+      "F2",
+      "DISPLAY_TOGGLE"
+    ],
+    "K26": [
+      "Y",
+      "Y"
+    ],
+    "K50": [
+      "CAPS",
+      "LEFT_CTRL"
+    ],
+    "K59": [
+      "RIGHT",
+      "PGDN"
+    ],
+    "K09": [
+      "F9",
+      "BRIGHTNESS_UP"
+    ],
+    "K56": [
+      "RIGHT_CTRL",
+      "APP"
+    ],
+    "K12": [
+      "2",
+      "2"
+    ],
+    "K45": [
+      "B",
+      "B"
+    ],
+    "K61": [
+      "DOWN",
+      "DOWN"
+    ],
+    "K04": [
+      "F4",
+      "KBD_BKL"
+    ],
+    "K32": [
+      "S",
+      "S"
+    ],
+    "K49": [
+      "PERIOD",
+      "PERIOD"
+    ],
+    "K30": [
+      "LEFT_CTRL",
+      "CAPS"
+    ],
+    "K03": [
+      "F3",
+      "MUTE"
+    ],
+    "K08": [
+      "F8",
+      "BRIGHTNESS_DOWN"
+    ],
+    "K19": [
+      "9",
+      "9"
+    ],
+    "K11": [
+      "1",
+      "FAN_TOGGLE"
+    ],
+    "K01": [
+      "F1",
+      "TOUCHPAD"
+    ],
+    "K14": [
+      "4",
+      "4"
+    ],
+    "K1C": [
+      "EQUALS",
+      "EQUALS"
+    ],
+    "K0F": [
+      "INSERT",
+      "PRINT_SCREEN"
+    ],
+    "K07": [
+      "F7",
+      "DISPLAY_MODE"
+    ],
+    "K29": [
+      "O",
+      "O"
+    ],
+    "K39": [
+      "L",
+      "L"
+    ],
+    "K3C": [
+      "ENTER",
+      "ENTER"
+    ],
+    "K53": [
+      "LEFT_ALT",
+      "LEFT_ALT"
+    ],
+    "K24": [
+      "R",
+      "R"
+    ],
+    "K10": [
+      "TICK",
+      "PLAY_PAUSE"
+    ]
+  },
+  "key_leds": {},
+  "layers": [
+    {
+      "mode": null,
+      "brightness": 2,
+      "color": [
+        0,
+        0
+      ]
+    }
+  ]
+}

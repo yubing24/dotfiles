@@ -1,0 +1,18 @@
+* My Awesome Linux Configurations
+Steps:
+** Make Symbolic Links
+
+I can either make those links manually, which is a pain, or use a management software, such as GNU Stow
+*** Bash
+```
+$ ln -sf ~/dotfiles/.bashrc ~/.bashrc
+```
+*** Emacs
+```
+$ rm -rf .emacs.d # remove existing folder to prevent creating dummy link
+$ ln -sf ~/dotfiles/.emacs.d ~/.emacs.d
+```
+*** Other Configs
+```
+$ ln -sf ~/dotfiles/config/<folder name> .config/
+```
