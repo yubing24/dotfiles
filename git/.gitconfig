@@ -1,5 +1,5 @@
 [core]
-	editor = emacs
+	editor = micro
 	excludesfile = ~/dotfiles/git/.gitignore_global
 
 [init]
