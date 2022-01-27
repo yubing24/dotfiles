@@ -1,0 +1,15 @@
+# temporary files
+*~
+
+# Mac OS Fils
+.DS_Store
+
+# Node Modules
+node_modules/
+
+# log files
+log/
+.log/
+
+# Jetbrain files
+.idea/

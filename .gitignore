@@ -1,0 +1,6 @@
+# no ssh files
+ssh/
+.ssh/
+
+# no emacs custom files
+custom.el

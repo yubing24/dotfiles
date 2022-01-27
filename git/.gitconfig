@@ -1,0 +1,9 @@
+[core]
+	editor = emacs
+	excludesfile = ~/dotfiles/git/.gitignore_global
+
+[init]
+	defaultBranch = master
+
+[pull]
+	rebase = true
