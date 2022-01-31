@@ -66,6 +66,7 @@
   :hook (python-mode . lsp-deferred)
   :hook (tex-mode . lsp-deferred)
   :hook (typescript-mode . lsp-deferred)
+  :hook (web-mode . lsp-deferred)
   :config
   (setq lsp-idle-delay 0.5)
   :bind(("C-c C-f C-d" . lsp-find-definition)

@@ -23,6 +23,10 @@
 (prefer-coding-system        'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
 
+;; System
+;; Window management
+(winner-mode 1)
+
 ;; Application - Configuration File Locations
 (setq custom-file (expand-file-name "~/.emacs.d/custom.el"))
 
