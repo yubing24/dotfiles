@@ -52,6 +52,30 @@
         visual-fill-column-center-text t)
   (visual-fill-column-mode 1))
 
+;; copy the previous code block in org mode to avoid typing
+(defun yhmacs/org-babel-copy-previous-src-block ()
+  "Copy previous src block excluding the content."
+  (interactive)
+  (let (result)
+    (save-excursion
+      (org-babel-previous-src-block)
+      (let ((element (org-element-at-point)))
+        (when (eq (car element) 'src-block)
+          (let* ((pl (cadr element))
+                 (lang (plist-get pl :language))
+                 (switches (plist-get pl :switches))
+                 (parms (plist-get pl :parameters)))
+            (setq result
+                  (format
+                   (concat "#+begin_src %s\n"
+                           "\n"
+                           "#+end_src\n")
+                   (mapconcat #'identity
+                              (delq nil (list lang switches parms))
+                              " ")))))))
+    (and result (insert result))
+    (previous-line 2)))
+
 (use-package visual-fill-column
   :pin melpa
   :ensure t
