@@ -6,18 +6,27 @@ This repository documents my jounery back to becoming a regular Emacs user.
 
 * Setup
 
+** Install necessary libraries.
+In order to take advantage of the latest Emacs native compilation as well as some performance
+improvement, install these libraries before proceeding:
+
+- =libjansson-dev=
+
 ** Build & Compile Emacs
 *** Follow instructions to download and build Emacs locally:
 #+begin_src sh
   $ mkdir -p ~/Programs/
   $ cd ~/Programs/
+  # clone repository
   $ git clone git://git.savannah.gnu.org/emacs.git
   $ cd emacs
+  # generate configure file
   $ ./autogen.sh
+  # configure emacs build option
   $ ./configure \
       --with-native-compilation  \
       --with-gnutls \
-      --with-imagemagick \
+      --with-json \
       --with-jpeg \
       --with-png \
       --with-rsvg \
@@ -26,7 +35,11 @@ This repository documents my jounery back to becoming a regular Emacs user.
       --with-xft \
       --with-xml2 \
       --with-xpm \
+      --with-mailutils \
       prefix=/usr/local
+  # compile emacs
+  $ sudo make -j$(nproc)
+  # install compiled emacs
   $ sudo make install
 #+end_src
 
@@ -54,11 +67,11 @@ Run snippet below to verify that JSON can be compiled natively as well:
 #+RESULTS:
 : Native JSON is available
 
-** Clone the repository to `$HOME/.emacs.d/`
+** Clone the repository to =$HOME/.emacs.d/=
 
 ** Change directory to project root
 
-** Initialize `custom.el`: `$ touch custom.el`
+** Initialize =custom.el=: =$ touch custom.el=
 
 * Edit
 
@@ -69,13 +82,13 @@ Several tools need to be installed to allow fast project traversal and string se
 
 *** Install
 
-**** On Linux: `$ sudo apt install silversearcher-ag`
+**** On Linux: =$ sudo apt install silversearcher-ag=
 
-****  On Mac: `$ brew install the_silver_searcher`
+****  On Mac: =$ brew install the_silver_searcher=
 
 * Configurations
-  * Set up the `.agignore` file, or a global `$HOME/.agignore` file
-  * Install `ag` melpa
+  * Set up the =.agignore= file, or a global =$HOME/.agignore= file
+  * Install =ag= melpa
 
 
 ** Language/Framework Server Protocols
@@ -87,7 +100,7 @@ sudo npm install -g @angular/language-service@next typescript @angular/language-
 #+end_src
 
 ***  Go
-Make sure `gopls` is installed and `$GOPATH/bin` is in emacs' executable paths.
+Make sure =gopls= is installed and =$GOPATH/bin= is in emacs' executable paths.
 
 *** JSON
 Run:
@@ -100,14 +113,14 @@ sudo npm install -g vscode-json-languageserver
 
 ***  PHP (language server not aways working)
 
-If running into issue `LSP :: example_file_name no in project or it is blacklisted`, add project root
+If running into issue =LSP :: example_file_name no in project or it is blacklisted=, add project root
 to LSP workspace or remove it from the blacklist:
-`M-x lsp-workspace-blacklist-remove` or `M-s lsp-workspace-folders-add`.
+=M-x lsp-workspace-blacklist-remove= or =M-s lsp-workspace-folders-add=.
 
 
 ***  Python3
-After `elpy` is added to emacs, also install addtional system requirements:
-`$ sudo apt install python3-jedi black python3-autopep8 yapf3 python3-yapf`
+After =elpy= is added to emacs, also install addtional system requirements:
+=$ sudo apt install python3-jedi black python3-autopep8 yapf3 python3-yapf=
 
 Then restart Emacs.
 

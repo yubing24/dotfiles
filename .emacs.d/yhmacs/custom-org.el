@@ -4,6 +4,9 @@
   (auto-fill-mode 0)
   (visual-line-mode 0))
 
+;; Hitting the RETURN button will follow links in org-mode files
+(setq org-return-follows-link t)
+
 (defun yhmacs/org-font-setup ()
   ;; Replace list hyphen with dot
   (font-lock-add-keywords 'org-mode
