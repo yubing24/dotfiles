@@ -37,6 +37,14 @@
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode t))
+;; disable default flycheck jslint
+(setq-default flycheck-disabled-checkers
+              (append flycheck-disabled-checkers
+                      '(javascript-jshint json-jsonlist)))
+;; use a global eslint
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+;; use a global eslint for flycheck in web-mode
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 (use-package ivy
   :diminish
