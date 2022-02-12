@@ -1,4 +1,5 @@
-;; Icons
+;;; pakcage yhmacs/ui - configure the UI of yhmacs
+;;; Mostly about 3rd party UI plugins installed for yhmacs.
 (use-package all-the-icons
   :ensure t)
 
@@ -59,11 +60,16 @@
   :init
   (doom-modeline-mode 1)
   :config
-  (setq doom-modeline-height 14)
+  (setq doom-modeline-height 32)
+  (setq doom-modeline-bar-width 12)
+  (setq doom-modeline-major-mode-icon t)
   (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-minor-modes nil)
+  (setq doom-modeline-buffer-file-name-style 'relative-from-project)
   (setq doom-modeline-buffer-state-icon t)
   (setq doom-modeline-buffer-modification-icon t)
   (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-indent-info t)
   (setq doom-modeline-lsp t))
 
 (provide 'ui)

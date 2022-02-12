@@ -127,4 +127,7 @@
   :config
   (add-to-list 'load-path "~/.emacs.d/yasnippet"))
 
+;; Make shebang (#!) file executable when saved
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
 (provide 'dev)
