@@ -69,7 +69,6 @@
   :commands (lsp lsp-deferred)
   :hook (go-mode . lsp-deferred)
   :hook (js2-mode . lsp-deferred)
-  :hook (json-mode . lsp-deferred)
   :hook (php-mode . lsp-deferred)
   :hook (python-mode . lsp-deferred)
   :hook (tex-mode . lsp-deferred)
@@ -129,5 +128,9 @@
 
 ;; Make shebang (#!) file executable when saved
 (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+;; Language specifics
+(setq-default js2-basic-offset 2
+	      js-indent-level 2)
 
 (provide 'dev)

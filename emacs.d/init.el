@@ -1,11 +1,19 @@
 ;; Garbage collection threshold
 (setq gc-cons-threshold-original gc-cons-threshold)
-(setq gc-cons-threshold 200000000)
+(setq gc-cons-threshold (* 1000 1000)) ;; 1 MB GC threshold, make thing faster
 (setq read-process-output-max (* 128 1024 1024)) ;; 128 Mbit
 
 ;; Use Emacs Native
 (setq package-native-compile t)
 (setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/libgccjit/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin20/11.2.0")
+;; Additional configuration for native compile
+(when (featurep 'native-compile)
+		;; Suppres compiler warnings
+		(setq native-compile-async-report-warnings-errors nil)
+		;; Make compilation async
+		(setq native-comp-deferred-compilation t)
+		;; Set directory to store compilation cache
+		(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
 
 ;; Set up packaging system
 (require 'package)

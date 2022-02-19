@@ -14,10 +14,9 @@
 ;; enable syntax highlighting in .js/.jsx files
 (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 
-;; set up indentation to 4 in web-mode\\\\
-(defun web-mode-init-hook()
-  (setq web-mode-markup-indent-offset 4))
+;; set up indentation to 4 in web-mode
 (add-hook 'web-mode-hook 'web-mode-init-hook)
+(setq tab-width 4)
 
 ;; add node_module path
 (use-package add-node-modules-path

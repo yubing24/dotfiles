@@ -19,8 +19,9 @@
   :mode "\\.go\\'"
   :hook (go-mode-hook . gofmt-before-save)
   :config
-  (setq indent-tabs-mode t)
-  (setq tab-width 4))
+  (setq indent-tabs-mode t))
+
+(setq tab-width 4)
 
 ;; only use company-mode with company-go in go-mode
 (add-hook 'go-mode-hook (lambda ()

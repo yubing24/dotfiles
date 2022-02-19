@@ -111,6 +111,9 @@
   :init
   (beacon-mode 1))
 
+;; Editor - indentation
+(setq-default indent-line-function 'insert-tab)
+
 ;; Editor - line highlight
 (global-hl-line-mode t)
 
