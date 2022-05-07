@@ -6,6 +6,9 @@ ssh/
 *~
 \#*\#
 
+# org-roam db indexing
+*.db
+
 # no emacs custom files
 ac-comphist.dat
 auto-save-list/

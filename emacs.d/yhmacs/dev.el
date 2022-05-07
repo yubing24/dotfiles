@@ -68,6 +68,7 @@
   :ensure t
   :commands (lsp lsp-deferred)
   :hook (go-mode . lsp-deferred)
+  :hook (graphql-mode . lsp-deferred)
   :hook (js2-mode . lsp-deferred)
   :hook (php-mode . lsp-deferred)
   :hook (python-mode . lsp-deferred)
