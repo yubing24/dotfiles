@@ -89,6 +89,8 @@ Several tools need to be installed to allow fast project traversal and string se
 * Configurations
   * Set up the =.agignore= file, or a global =$HOME/.agignore= file
   * Install =ag= melpa
+  * Create a directory  =~/org-roam= for taking notes in Org Roam mode.
+
 
 
 ** Language/Framework Server Protocols

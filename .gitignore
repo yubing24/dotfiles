@@ -6,7 +6,7 @@ ssh/
 *~
 \#*\#
 
-# org-roam db indexing
+# no org roam indexing db
 *.db
 
 # no emacs custom files

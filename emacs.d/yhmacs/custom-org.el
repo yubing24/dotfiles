@@ -50,6 +50,8 @@
   :custom
   (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
 
+(setq org-babel-python-command "python3")
+
 (defun yhmacs/org-mode-visual-fill ()
   (setq visual-fill-column-width 100
         visual-fill-column-center-text t)
@@ -131,5 +133,24 @@
 (add-to-list 'org-structure-template-alist '("php" . "src php"))
 (add-to-list 'org-structure-template-alist '("go" . "src go"))
 (add-to-list 'org-structure-template-alist '("js" . "src js"))
+
+;; Org Roam
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/OrgRoam")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+	 :map org-mode-map
+	 ("C-M-i" . completion at point))
+  :config
+  (org-roam-setup))
+
+(setq find-file-visit-truename t) ;; Make Emacs always resolve symbolic link, this slows down performance
+(org-roam-db-autosync-mode) ;; Make Org-roam to cache changes in real time. This makes org-roam available on startup.
 
 (provide 'custom-org)
