@@ -72,6 +72,7 @@
   :hook (js2-mode . lsp-deferred)
   :hook (php-mode . lsp-deferred)
   :hook (python-mode . lsp-deferred)
+  :hook (sql-mode . lsp-deferred)
   :hook (tex-mode . lsp-deferred)
   :hook (typescript-mode . lsp-deferred)
   :hook (web-mode . lsp-deferred)
