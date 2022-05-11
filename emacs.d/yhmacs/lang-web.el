@@ -16,7 +16,6 @@
 (setq web-mode-content-types-alist '(("jsx" . "\\.js[x]?\\'")))
 
 ;; set up indentation to 4 in web-mode
-(add-hook 'web-mode-hook 'web-mode-init-hook)
 (setq tab-width 4)
 
 ;; add node_module path
