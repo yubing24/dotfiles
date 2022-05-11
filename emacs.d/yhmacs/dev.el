@@ -99,6 +99,20 @@
 (use-package magit
   :ensure t)
 
+;; Text folding
+(use-package s
+  :ensure t)
+(use-package dash
+  :ensure t)
+(use-package origami
+  :ensure t
+  :init
+  (global-origami-mode t)
+  :bind(("C-c C-o C-n" . origami-open-node)
+	("C-c C-f C-n" . origami-close-node)
+	("C-c C-S-o C-n" . origami-open-all-nodes)
+	("C-c C-S-f C-n" . origami-close-all-nodes)))
+
 (use-package powerline
   :ensure t)
 
