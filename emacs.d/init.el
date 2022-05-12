@@ -61,6 +61,7 @@
 (require 'lang-typescript)
 (require 'lang-yaml)
 (require 'lang-web)
+(require 'key)
 
 ;; package management setup
 ;; if use-package is not installed, install use-package. Useful on non-Linux platform

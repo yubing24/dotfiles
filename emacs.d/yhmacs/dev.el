@@ -10,9 +10,7 @@
   :diminish
   :ensure t
   :config
-  (setq ag-highlight-search t)
-  :bind (("C-x C-S-f" . ag-project)
-		 ("C-x C-S-r" . ag-project-regexp)))
+  (setq ag-highlight-search t))
 
 ;; Company - auto-completion
 (use-package company
@@ -33,6 +31,12 @@
   :bind (("M-x" . counsel-M-x)
 		 ("C-x b" . counsel-ibuffer)
 		 ("C-x C-f" . counsel-find-file)))
+
+;; Crux - collection of some useful editing functions and bindings
+(use-package crux
+  :diminish
+  :ensure t
+  :pin melpa-stable)
 
 (use-package flycheck
   :ensure t
@@ -77,11 +81,7 @@
   :hook (typescript-mode . lsp-deferred)
   :hook (web-mode . lsp-deferred)
   :config
-  (setq lsp-idle-delay 0.5)
-  :bind(("C-c C-f C-d" . lsp-find-definition)
-		("C-c C-f C-r" . lsp-find-references)
-		("C-c C-f C-i" . lsp-find-implementation)
-		("C-c C-f C-b" . lsp-format-buffer)))
+  (setq lsp-idle-delay 0.5))
 
 (use-package lsp-ivy
   :ensure t)
@@ -107,11 +107,7 @@
 (use-package origami
   :ensure t
   :init
-  (global-origami-mode t)
-  :bind(("C-c C-o C-n" . origami-open-node)
-	("C-c C-f C-n" . origami-close-node)
-	("C-c C-S-o C-n" . origami-open-all-nodes)
-	("C-c C-S-f C-n" . origami-close-all-nodes)))
+  (global-origami-mode t))
 
 (use-package powerline
   :ensure t)
