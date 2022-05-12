@@ -1,6 +1,6 @@
-(use-package elpy
+(use-package lsp-pyright
   :ensure t
-  :init
-  (elpy-enable))
-
+  :hook (python-mode . (lambda()
+			 (require 'lsp-pyright)
+			 (lsp-deferred))))
 (provide 'lang-python)
