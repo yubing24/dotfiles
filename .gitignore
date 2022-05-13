@@ -39,3 +39,6 @@ custom.el
 
 # ignore native emacs compilation caches
 eln-cache/
+
+# ignore SQL workspace configuration
+sql-workspace/config.json

@@ -126,6 +126,10 @@ After =elpy= is added to emacs, also install addtional system requirements:
 
 Then restart Emacs.
 
+*** SQL
+Install the LSP server:
+=go get github.com/lighttiger2505/sqls=
+
 
 ***  TypeScript/Javascript
 

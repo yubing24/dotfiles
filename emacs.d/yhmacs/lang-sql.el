@@ -1,7 +1,10 @@
 (use-package sql
   :ensure t)
 
-(setq lsp-sqls-workspace-config-path nil)
+;; SQL
+(add-hook 'sql-mode-hook 'lsp)
+(setq lsp-sqls-workspace-config-path "~/dotfiles/sql-workspace/")
+
 
 (use-package sqlformat
   :ensure t)

@@ -1,0 +1,14 @@
+{
+  "sqls": {
+    "connections": [
+      {
+      "driver": "mysql",
+      "dataSourceName": "username:password@tcp(host:port)/dbname"
+    },
+      {
+      "driver": "postgresql",
+      "dataSourceName": "host=<hostaddr> port=<port> user=<username> password=<password> dbname=<database> sslmode=disable"
+    }
+    ]
+  }
+}
