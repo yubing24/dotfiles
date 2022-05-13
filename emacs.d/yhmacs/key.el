@@ -1,5 +1,7 @@
 ;; Personal Key Maps (with prefix) to group the use of keys
 
+(global-set-key (kbd "C-S-r") 'revert-buffer)
+
 ;; Editing
 (define-prefix-command 'edit-key-map)
 (global-set-key (kbd "C-c e") 'edit-key-map)

@@ -40,7 +40,8 @@
 ;; $PATH defintions
 (use-package exec-path-from-shell
   :ensure t
-  :init
+  :defer nil
+  :config
   (exec-path-from-shell-initialize))
 
 ;; Application Behavior
