@@ -1,0 +1,36 @@
+# Searches that I don't care
+
+### JetBrain's IDE ###
+.idea/
+*.iml
+
+### Node Modules ###
+node_modules/
+logs/
+*.log
+dist/
+
+### Test Coverages ###
+coverage
+.coverage
+.cache
+coverage.xml
+
+### Python ###
+__pycache__/
+venv/
+.venv/
+
+### Mac ###
+.DS_Store
+
+### Git ###
+.git
+
+### Emacs ###
+elpa/
+elpy/
+etc/
+private/
+transient/
+var/

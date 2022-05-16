@@ -11,3 +11,6 @@ ln -nfs $(pwd)/git/.gitconfig $HOME/.gitconfig
 
 # Profile
 ln -nfs $(pwd)/.profile $HOME/.profile
+
+# Ag
+ln -nfs $(pwd)/agignore $HOME/.agignore
