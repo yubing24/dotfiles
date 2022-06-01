@@ -101,6 +101,11 @@ Run
 sudo npm install -g @angular/language-service@next typescript @angular/language-server`
 #+end_src
 
+*** C# / .NET
+1. If on Mac OS X / Linux, install =Mono= first
+2. Clone and install =omnisharp= from Github.
+
+
 ***  Go
 Make sure =gopls= is installed and =$GOPATH/bin= is in emacs' executable paths.
 

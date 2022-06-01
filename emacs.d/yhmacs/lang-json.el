@@ -8,8 +8,15 @@
   :ensure t
   :mode "\\.graphql\\'")
 
+(defun format-json-on-save ()
+  "Format JSON file on Save"
+  (when (eq major-mode 'json-mode)
+    (json-pretty-print-buffer)))
+
 (use-package json-mode
   :ensure t
   :mode "\\.json\\'")
+
+(add-hook 'after-save-hook 'format-json-on-save)
 
 (provide 'lang-json)
