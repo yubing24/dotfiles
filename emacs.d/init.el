@@ -20,9 +20,9 @@
 
 ;; Package Management - sources
 (setq package-archives '(("melpa" . "https://melpa.org/packages/")
-                        ("melpa-stable" . "https://stable.melpa.org/packages/")
                         ("elpa" . "https://elpa.gnu.org/packages/")
-			("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+                        ("melpa-stable" . "https://stable.melpa.org/packages/")
+                        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
 ;; [note] some packages require melpa-stable, like lsp-ui
 
 ;; This line may help with the freezing issue in Mac
@@ -44,7 +44,7 @@
   :ensure t)
 
 ;; my customizations
-(add-to-list 'load-path "~/.emacs.d/yhmacs/")
+(add-to-list 'load-path "~/dotfiles/emacs.d/yhmacs/")
 
 (require 'defaults) ;; base configuration for entire Emacs
 (require 'dev) ;; common configuration for all code-writing task
@@ -76,7 +76,7 @@
 (setq auto-save-file-name-transforms
       `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
 
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file "~/dotfiles/emacs.d/custom.el")
 (load custom-file)
 (setq exec-path (append exec-path '("~/go/bin")))
 (setq exec-path (append exec-path '("/usr/local/bin")))

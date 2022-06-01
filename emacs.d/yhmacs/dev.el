@@ -36,7 +36,7 @@
 (use-package crux
   :diminish
   :ensure t
-  :pin melpa-stable)
+  :pin melpa)
 
 (use-package flycheck
   :ensure t
