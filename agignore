@@ -9,6 +9,7 @@ node_modules/
 logs/
 *.log
 dist/
+__generated__/
 
 ### Test Coverages ###
 coverage
@@ -34,3 +35,4 @@ etc/
 private/
 transient/
 var/
+

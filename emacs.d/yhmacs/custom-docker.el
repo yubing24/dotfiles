@@ -1,8 +1,7 @@
-(use-package docker
+(use-package dockerfile-mode
   :pin melpa
   :ensure t)
-
-(use-package dockerfile-mode
+(use-package lsp-docker
   :pin melpa
   :ensure t)
 

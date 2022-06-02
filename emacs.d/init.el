@@ -49,8 +49,8 @@
 (require 'defaults) ;; base configuration for entire Emacs
 (require 'dev) ;; common configuration for all code-writing task
 (require 'ui)
-;; (require 'custom-org)
-;; (require 'custom-docker)
+(require 'custom-org)
+(require 'custom-docker)
 (require 'lang-go)
 (require 'lang-javascript)
 (require 'lang-json)
