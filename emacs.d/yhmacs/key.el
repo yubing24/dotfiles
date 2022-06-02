@@ -28,7 +28,7 @@
 (global-set-key (kbd "C-c c") 'code-key-map)
 (define-key 'code-key-map (kbd "f d") 'lsp-find-definition)
 (define-key 'code-key-map (kbd "f i") 'lsp-find-implementation)
-(define-key 'code-key-map (kbd "f r") 'lsp-find-reference)
+(define-key 'code-key-map (kbd "f r") 'lsp-find-references)
 (define-key 'code-key-map (kbd "f b") 'lsp-format-buffer)
 
 ;; Window/Buffer-managing
