@@ -32,12 +32,6 @@
 		 ("C-x b" . counsel-ibuffer)
 		 ("C-x C-f" . counsel-find-file)))
 
-;; Crux - collection of some useful editing functions and bindings
-(use-package crux
-  :diminish
-  :ensure t
-  :pin melpa)
-
 (use-package flycheck
   :ensure t
   :init (global-flycheck-mode t))
