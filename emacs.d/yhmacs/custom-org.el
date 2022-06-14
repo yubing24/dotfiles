@@ -107,7 +107,7 @@
  'org-babel-load-languages
  '((http . t)
    (python . t)
-   (php . t)
+;;   (php . t)
    (awk . t)
    (shell . t)
    (C . t)
