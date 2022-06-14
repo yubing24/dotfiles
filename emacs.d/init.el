@@ -6,12 +6,6 @@
 ;;
 ;; Description: personal Emacs configuration. Use this at your own risk.
 
-;; Set customize file location. Do not load it unless it exists
-(setq custom-file (concat user-emacs-directory "custom.el"))
-(when (file-exists-p custom-file)
-  (load custom-file))
-
-
 ;; Garbage collection threshold (for LSP)
 (setq gc-cons-threshold (* 100 1024 1024)) ;; 100 MB GC threshold, make thing faster. Suggested by emacs-lsp.github.io
 (setq read-process-output-max (* 5 1024 1024)) ;; 5 MB
@@ -69,6 +63,9 @@
 (require 'use-package-ensure)
 (setq use-package-always-ensure t)
 
+;; Keep emacs configuration clean, need this to be loaded as early as possible
+(use-package no-littering)
+
 ;; Keep packages up to date
 (use-package auto-package-update
   :config
@@ -109,10 +106,13 @@
 ;; Application - Binary execution paths
 (setq exec-path (append exec-path '("/usr/local/bin"))
       exec-path (append exec-path '("~/go/bin")))
+(use-package add-node-modules-path) ;; Use node_modules exectuables
+
 ;; $PATH defintions
-(use-package exec-path-from-shell
-  :defer nil
-  :config
+(use-package exec-path-from-shell)
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+(when (daemonp)
   (exec-path-from-shell-initialize))
 
 ;; Application Behavior
@@ -138,7 +138,7 @@
 ;; UI - Make scroling great again!
 (setq auto-window-vscroll nil)
 (setq fast-but-imprecise-scrolling t)
-(setq scroll-conservatively 100000)
+(setq scroll-conservatively 101)
 (setq scroll-margin 0)
 (setq scroll-preserve-screen-position t)
 
@@ -212,7 +212,7 @@
 
 ;; dired - show less when looking up files, and group directories first
 (use-package dired
-  :ensure nil ;; use-package doesn't always find it
+  :ensure nil ;; Set it to nil because I am using use-package to configure dired, not installing it.
   :commands (dired dired-jump)
   :custom
   ((dired-listing-switches "-agho --group-directories-first")))
@@ -287,30 +287,27 @@
 
 ;; JavaScript
 (use-package prettier-js
-  :hook (js2-mode-hook prettier-js-mode)
-  :hook (web-mode-hook prettier-js-mode)
-  :hook (typescript-mode-hook prettier-js-mode)) ;; JS Code formatter
+  :after (add-node-modules-path)
+  :after (:any js2-mode web-mode typescript-mode)
+  :hook (js2-mode-hook . prettier-js-mode)
+  :hook (web-mode-hook . prettier-js-mode)
+  :hook (typescript-mode-hook . prettier-js-mode)) ;; JS Code formatter
 (use-package js2-mode
   :mode "\\.js\\'"
   :hook (js2-mode-hook . prettier-js-mode))
-(use-package add-node-modules-path
-  :hook (flycheck-mode-hook . add-node-modules-path)) ;; Add node_modules to exec path.
 
 
 ;; JSON
 (use-package json-mode
   :mode "\\.json\\'")
 
-(use-package rjsx-mode) ;; JSX
+(use-package rjsx-mode
+  :mode "\\.jsx\\'") ;; JSX
 
 ;; LaTeX
 (use-package latex-preview-pane)
 (use-package company-math)
 (use-package latex-pretty-symbols)
-
-;; Lisp
-(use-package lisp-mode
-  :ensure nil)
 
 (use-package markdown-mode)
 
@@ -539,8 +536,7 @@
 
 ;; Mode line (doom-theme)
 (use-package doom-modeline
-  :init
-  (doom-modeline-mode 1)
+  :init (doom-modeline-mode 1)
   :config
   (setq doom-modeline-height 32)
   (setq doom-modeline-bar-width 12)
@@ -737,7 +733,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; environments
-(use-package no-littering)
 (unless (file-exists-p "~/.emacs.d/auto-save")
   (make-directory "~/.emacs.d/auto-save") :parents)
 (setq auto-save-file-name-transforms
