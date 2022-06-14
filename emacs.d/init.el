@@ -6,14 +6,17 @@
 ;;
 ;; Description: personal Emacs configuration. Use this at your own risk.
 
+;; Set customize file location. Do not load it unless it exists
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(when (file-exists-p custom-file)
+  (load custom-file))
+
 
 ;; Garbage collection threshold (for LSP)
 (setq gc-cons-threshold (* 100 1024 1024)) ;; 100 MB GC threshold, make thing faster. Suggested by emacs-lsp.github.io
 (setq read-process-output-max (* 5 1024 1024)) ;; 5 MB
 ;; Do not warn about the file size unless it exceeds this amount
 (setq large-file-warning-threshold (* 50 1024 1024)) ;; 50 MB
-(size-indication-mode t) ;; show file size
-
 
 ;; Use Emacs Native
 (setq package-native-compile t)
@@ -40,15 +43,14 @@
 ;; This line may help with the freezing issue in Mac
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
-
 ;; Loading newerly compiled packages
 (setq load-prefer-newer t) ;; Call this before package initialize
 
 (package-initialize) ;; initialize package list
-(unless package-archive-contents ;; useful when setting up a fresh new computer
+(unless package-archive-contents ;; useful when setting up a fresh new computer. Update the package metadata if local cache is missing
   (package-refresh-contents))
 
-;; Make sre packages are automatically compiled
+;; Make sure packages are automatically compiled so that no outdated byte code is loaded
 (unless (package-installed-p 'auto-compile)
   (package-install 'auto-compile))
 (require 'auto-compile)
@@ -99,9 +101,6 @@
 ;; System
 ;; Window management
 (winner-mode 1)
-
-;; Application - Configuration File Locations
-(setq custom-file (expand-file-name "~/.emacs.d/custom.el"))
 
 ;; Application - temporary and private file directories
 (defconst private-dir  (expand-file-name "private" user-emacs-directory))
@@ -285,7 +284,18 @@
 ;; GraphQL
 (use-package graphql-mode
   :mode "\\.graphql\\'")
-(use-package js2-mode) ;; Javascript
+
+;; JavaScript
+(use-package prettier-js
+  :hook (js2-mode-hook prettier-js-mode)
+  :hook (web-mode-hook prettier-js-mode)
+  :hook (typescript-mode-hook prettier-js-mode)) ;; JS Code formatter
+(use-package js2-mode
+  :mode "\\.js\\'"
+  :hook (js2-mode-hook . prettier-js-mode))
+(use-package add-node-modules-path
+  :hook (flycheck-mode-hook . add-node-modules-path)) ;; Add node_modules to exec path.
+
 
 ;; JSON
 (use-package json-mode
@@ -328,13 +338,33 @@
 
 ;; TypeScript
 (use-package typescript-mode
-  :mode "\\.ts\\'")
+  :mode "\\.ts\\'"
+  :hook (typescript-mode-hook . prettier-js-mode)
+  :hook (typescript-mode-hook . (lambda () (setq tab-width 2))))
 
 ;; Web development general settings
-(use-package web-mode)
+(use-package web-mode
+  :init
+  (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.jsx?$" . web-mode))
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . web-mode))
+  :hook (web-mode-hook . prettier-js-mode))
 (use-package company-web)
 
 (use-package yaml-mode)
+
+;; Code Editing -- format
+(defun prettify-ecmascript-on-save ()
+  "Format ECMAScript (JS/TS) using Prettier upon saving files."
+  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode))
+    (prettier-js)))
+(add-hook 'after-save-hook 'prettify-ecmascript-on-save)
 
 ;; ace-window: makes window switching easy
 (use-package ace-window
@@ -426,8 +456,6 @@
 (use-package origami
   :init
   (global-origami-mode t))
-
-(use-package powerline)
 
 (use-package projectile
   :diminish
@@ -526,13 +554,164 @@
   (setq doom-modeline-indent-info t)
   (setq doom-modeline-lsp t))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org Mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun yhmacs/org-custom-setup()
+  (org-indent-mode)
+  (variable-pitch-mode 1)
+  (auto-fill-mode 0)
+  (visual-line-mode 0))
 
-;; my customizations
-(add-to-list 'load-path "~/dotfiles/emacs.d/yhmacs/")
+;; Hitting the RETURN button will follow links in org-mode files
+(setq org-return-follows-link t)
 
-;;(require 'custom-org)
+(defun yhmacs/org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
 
-(require 'lang-javascript)
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.6)
+                  (org-level-2 . 1.5)
+                  (org-level-3 . 1.4)
+                  (org-level-4 . 1.3)
+                  (org-level-5 . 1.2)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "JetBrains Mono" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+
+(use-package org
+  :pin elpa
+  :ensure t
+  :hook (org-mode . yhmacs/org-custom-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (setq org-confirm-babel-evaluate nil)
+  (yhmacs/org-font-setup))
+
+(use-package org-bullets
+  :pin melpa
+  :ensure t
+  :after org
+  :hook (org-mode . org-bullets-mode)
+  :custom
+  (org-bullets-bullet-list '("◉" "○" "●" "○" "●" "○" "●")))
+
+(setq org-babel-python-command "python3")
+
+(defun yhmacs/org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+        visual-fill-column-center-text t)
+  (visual-fill-column-mode 1))
+
+;; copy the previous code block in org mode to avoid typing
+(defun yhmacs/org-babel-copy-previous-src-block ()
+  "Copy previous src block excluding the content."
+  (interactive)
+  (let (result)
+    (save-excursion
+      (org-babel-previous-src-block)
+      (let ((element (org-element-at-point)))
+        (when (eq (car element) 'src-block)
+          (let* ((pl (cadr element))
+                 (lang (plist-get pl :language))
+                 (switches (plist-get pl :switches))
+                 (parms (plist-get pl :parameters)))
+            (setq result
+                  (format
+                   (concat "#+begin_src %s\n"
+                           "\n"
+                           "#+end_src\n")
+                   (mapconcat #'identity
+                              (delq nil (list lang switches parms))
+                              " ")))))))
+    (and result (insert result))
+    (previous-line 2)))
+
+(use-package visual-fill-column
+  :pin melpa
+  :ensure t
+  :hook (org-mode . yhmacs/org-mode-visual-fill))
+
+(use-package ob-async
+  :ensure t
+  :pin melpa)
+
+(use-package org-contrib
+  :ensure t
+  :pin nongnu)
+
+(use-package ob-http
+  :ensure t
+  :pin melpa)
+
+(use-package ob-go
+  :ensure t
+  :pin melpa)
+
+;; Add language-support to list
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((http . t)
+   (python . t)
+;;   (php . t)
+   (awk . t)
+   (shell . t)
+   (C . t)
+   (css . t)
+   (emacs-lisp . t)
+   (sed . t)
+   (java . t)
+   (latex . t)
+   (makefile . t)
+   (js . t)
+   (org . t)
+   (sql . t)
+   (sqlite . t)))
+
+;; add templates to use for org mode
+(require 'org-tempo)
+
+(add-to-list 'org-structure-template-alist '("sh" . "src shell"))
+(add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
+(add-to-list 'org-structure-template-alist '("py" . "src python"))
+(add-to-list 'org-structure-template-alist '("java" . "src java"))
+(add-to-list 'org-structure-template-alist '("sql" . "src sql"))
+(add-to-list 'org-structure-template-alist '("php" . "src php"))
+(add-to-list 'org-structure-template-alist '("go" . "src go"))
+(add-to-list 'org-structure-template-alist '("js" . "src js"))
+
+;; Org Roam
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/OrgRoam")
+  (org-roam-completion-everywhere t)
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+	 ("C-c n f" . org-roam-node-find)
+	 ("C-c n i" . org-roam-node-insert)
+	 :map org-mode-map
+	 ("C-M-i" . completion-at-point))
+  :config
+  (org-roam-setup))
+
+(setq find-file-visit-truename t) ;; Make Emacs always resolve symbolic link, this slows down performance
+(org-roam-db-autosync-mode) ;; Make Org-roam to cache changes in real time. This makes org-roam available on startup.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; JSON mode, including formatting and some utility function.
 ;; To format json document, use C-c C-f. Indentation level is set to 2 by default
@@ -548,11 +727,7 @@
 
 (add-hook 'after-save-hook 'format-json-on-save)
 
-(require 'lang-typescript)
 
-(require 'lang-web)
-(require 'key)
-(require 'custom-org)
 
 ;; package management setup
 ;; if use-package is not installed, install use-package. Useful on non-Linux platform
@@ -568,12 +743,15 @@
 (setq auto-save-file-name-transforms
       `((".*" ,"~/.emacs.d/auto-save/" t)))
 
-(load custom-file)
 (setq exec-path (append exec-path '("~/go/bin")))
 (setq exec-path (append exec-path '("/usr/local/bin")))
 
-;; [Editing]  Delete trailing whitespace before save
+;; [Editing] Delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; [Editing] Always delete the selected text with a key stroke, otherwise I'll have to press backspace
+;; to delete selected text
+(delete-selection-mode t)
 
 ;; [Editing] make table always indent or complete
 (setq tab-always-indent 'complete)
@@ -584,3 +762,37 @@
   (setq recentf-save-file
 	(recentf-expand-file-name "~/.emacs.d/private/cache/recentf"))
   (recentf-mode 1))
+
+
+;; Key bindings
+
+(global-set-key (kbd "C-S-r") 'revert-buffer)
+
+;; Editing
+(define-prefix-command 'edit-key-map)
+(global-set-key (kbd "C-c e") 'edit-key-map)
+
+;; Searching
+(define-prefix-command 'search-key-map)
+(global-set-key (kbd "C-c s") 'search-key-map)
+(define-key 'search-key-map (kbd "f") 'ag-project)
+
+;; Viewing
+(define-prefix-command 'view-key-map)
+(global-set-key (kbd "C-c v") 'view-key-map)
+(define-key 'view-key-map (kbd "o n") 'origami-open-node)
+(define-key 'view-key-map (kbd "c n") 'origami-close-node)
+(define-key 'view-key-map (kbd "O n") 'origami-open-all-nodes)
+(define-key 'view-key-map (kbd "C n") 'origami-close-all-nodes)
+
+;; Coding
+(define-prefix-command 'code-key-map)
+(global-set-key (kbd "C-c c") 'code-key-map)
+(define-key 'code-key-map (kbd "f d") 'lsp-find-definition)
+(define-key 'code-key-map (kbd "f i") 'lsp-find-implementation)
+(define-key 'code-key-map (kbd "f r") 'lsp-find-references)
+(define-key 'code-key-map (kbd "f b") 'lsp-format-buffer)
+
+;; Window/Buffer-managing
+(define-prefix-command 'window-key-map)
+(global-set-key (kbd "C-c w") 'window-key-map)
