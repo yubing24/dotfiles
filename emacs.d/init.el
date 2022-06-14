@@ -1,14 +1,14 @@
-;; Garbage collection threshold
-(setq gc-cons-threshold-original gc-cons-threshold)
-(setq gc-cons-threshold (* 1000 1000)) ;; 1 MB GC threshold, make thing faster
-(setq read-process-output-max (* 128 1024 1024)) ;; 128 Mbit
+;; My Emacs configuration
+;; Garbage collection threshold (for LSP)
+(setq gc-cons-threshold (* 100 1024 1024)) ;; 100 MB GC threshold, make thing faster. Suggested by emacs-lsp.github.io
+(setq read-process-output-max (* 5 1024 1024)) ;; 5 MB
 
 ;; Use Emacs Native
 (setq package-native-compile t)
 (setenv "LIBRARY_PATH" "/usr/local/opt/gcc/lib/gcc/11:/usr/local/opt/libgccjit/lib/gcc/11:/usr/local/opt/gcc/lib/gcc/11/gcc/x86_64-apple-darwin20/11.2.0")
 ;; Additional configuration for native compile
 (when (featurep 'native-compile)
-		;; Suppres compiler warnings
+		;; Suppress compiler warnings
 		(setq native-compile-async-report-warnings-errors nil)
 		;; Make compilation async
 		(setq native-comp-deferred-compilation t)
@@ -37,11 +37,17 @@
   (package-refresh-contents) ;; update package list before install use-package
   (package-install 'use-package)) ;; install use-package
 (require 'use-package)
-(setq use-package-alaways-ensure t)
 
-;; command action logging
-(use-package command-log-mode
-  :ensure t)
+;; Always ensure packages are installed
+(require 'use-package-ensure)
+(setq use-package-always-ensure t)
+
+;; Keep packages up to date
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (auto-package-update-maybe))
 
 ;; Font-size for each system
 (defvar yhou/font-scale 100)
@@ -56,8 +62,7 @@
 	(setq yhou/font-scale 100))
 
 
-;; System
-;; Fundamentals - Text Encoding
+;; Text Encoding
 (set-charset-priority        'unicode)
 (setq locale-coding-system   'utf-8)
 (set-terminal-coding-system  'utf-8)
@@ -82,7 +87,6 @@
       exec-path (append exec-path '("~/go/bin")))
 ;; $PATH defintions
 (use-package exec-path-from-shell
-  :ensure t
   :defer nil
   :config
   (exec-path-from-shell-initialize))
@@ -151,7 +155,6 @@
 
 ;; Editor - highlight cursor
 (use-package beacon
-  :ensure t
   :init
   (beacon-mode 1))
 
@@ -166,7 +169,6 @@
   (windmove-default-keybindings))
 
 (use-package which-key
-  :ensure t
   :init
   (which-key-mode)
   (which-key-setup-minibuffer)
@@ -184,7 +186,6 @@
 
 ;; dired - show less when looking up files, and group directories first
 (use-package dired
-  :ensure nil
   :commands (dired dired-jump)
   :custom
   ((dired-listing-switches "-agho --group-directories-first")))
@@ -232,44 +233,101 @@
       backup-directory-alist    `((".*" . ,(concat temp-dir "/backup/")))
  auto-save-file-name-transforms    `((".*" ,(concat temp-dir "/auto-save-list/") t)))
 (unless (file-exists-p (concat temp-dir "/auto-save-list"))
-		       (make-directory (concat temp-dir "/auto-save-list") :parents))
+  (make-directory (concat temp-dir "/auto-save-list") :parents))
+
+;; Programming language modes
+(use-package ng2-mode) ;; Angular 2+
+(use-package csharp-mode
+  :mode "\\.cs\\'") ;; C#
+(use-package dart-mode)
+
+;; Docker
+(use-package dockerfile-mode)
+(use-package docker)
+(use-package docker-compose-mode)
+(use-package lsp-docker)
+
+(use-package git-modes)
+;; Go
+(use-package go-mode
+  :mode "\\.go\\'"
+  :hook (go-mode-hook . gofmt-before-save))
+(use-package company-go)
+
+;; GraphQL
+(use-package graphql-mode
+  :mode "\\.graphql\\'")
+(use-package js2-mode) ;; Javascript
+
+;; JSON
+(use-package json-mode
+  :mode "\\.json\\'")
+
+(use-package rjsx-mode) ;; JSX
+
+;; LaTeX
+(use-package latex-preview-pane)
+(use-package company-math)
+(use-package latex-pretty-symbols)
+
+
+(use-package markdown-mode)
+
+;; PHP
+(use-package php-mode
+  :mode "\\.php\\'")
+(use-package company-php)
+
+;; Python
+(use-package python-mode)
+(use-package lsp-python-ms) ;; LSP-mode client for Microsoft Python
+
+(use-package rust-mode)
+(use-package sass-mode)
+(use-package scss-mode)
+
+;; SQL
+(use-package sqlformat)
+
+(use-package typescript-mode
+  :mode)
+
+;; Web development general settings
+(use-package web-mode)
+(use-package company-web)
+
+(use-package yaml-mode)
 
 ;; ace-window: makes window switching easy
 (use-package ace-window
   :diminish
   :init
-  :ensure t
   :config
   (global-set-key (kbd "M-o") 'ace-window))
 
 (use-package ag
   :diminish
-  :ensure t
   :config
   (setq ag-highlight-search t))
 
 ;; Company - auto-completion
 (use-package company
   :diminish
-  :ensure t
   :config
   (setq company-idle-delay 0.2)
   (setq company-minimum-prefix-length 3)) ;; do NOT hint until 2 characters
 
 (use-package company-box
-  :ensure t
   :hook (company-mode . company-box-mode))
 
 ;; Provide additional documation when Ivy is triggered
 (use-package counsel
   :diminish
-  :ensure t
   :bind (("M-x" . counsel-M-x)
 		 ("C-x b" . counsel-ibuffer)
 		 ("C-x C-f" . counsel-find-file)))
 
 (use-package flycheck
-  :ensure t
   :init (global-flycheck-mode t))
 ;; disable default flycheck jslint
 (setq-default flycheck-disabled-checkers
@@ -282,7 +340,6 @@
 
 (use-package ivy
   :diminish
-  :ensure t
   :config
   (ivy-mode 1) ;; ensure ivy always runs
   (setq ivy-use-virtual-buffers t)
@@ -293,13 +350,11 @@
 ;; Additional helpful information when ivy is triggered
 (use-package ivy-rich
   :diminish
-  :ensure t
   :after ivy
   :init
   (ivy-rich-mode 1))
 
 (use-package lsp-mode
-  :ensure t
   :commands (lsp lsp-deferred)
   :hook (go-mode . lsp-deferred)
   :hook (json-mode . lsp-deferred)
@@ -311,13 +366,12 @@
   :hook (typescript-mode . lsp-deferred)
   :hook (web-mode . lsp-deferred)
   :config
-  (setq lsp-idle-delay 0.5))
+  (setq lsp-idle-delay 0.5)
+  (setq lsp-log-io nil)) ;; setting to true will have performance tax
 
-(use-package lsp-ivy
-  :ensure t)
+(use-package lsp-ivy)
 
 (use-package lsp-ui
-  :ensure t
   :hook (lsp-mode . lsp-ui-mode)
   :config
   (setq lsp-ui-doc-enable t)
@@ -326,25 +380,19 @@
   (setq lsp-ui-doc-show-with-cursor t))
 
 ;; Git UI
-(use-package magit
-  :ensure t)
+(use-package magit)
 
 ;; Text folding
-(use-package s
-  :ensure t)
-(use-package dash
-  :ensure t)
+(use-package s)
+(use-package dash)
 (use-package origami
-  :ensure t
   :init
   (global-origami-mode t))
 
-(use-package powerline
-  :ensure t)
+(use-package powerline)
 
 (use-package projectile
   :diminish
-  :ensure t
   :init
   (projectile-mode +1)
   (when (file-directory-p "~/Projects")
@@ -354,15 +402,12 @@
   :custom((projectile-completion-system 'ivy)))
 
 (use-package rainbow-delimiters
-  :diminish
-  :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
 
-(use-package treemacs
-  :ensure t)
+;; File browsing
+(use-package treemacs)
 
 (use-package yasnippet
-  :ensure t
   :init
   (yas-global-mode 1)
   :config
@@ -377,17 +422,14 @@
 
 ;;; pakcage yhmacs/ui - configure the UI of yhmacs
 ;;; Mostly about 3rd party UI plugins installed for yhmacs.
-(use-package all-the-icons
-  :ensure t)
+(use-package all-the-icons)
 
 (use-package all-the-icons-dired
-  :ensure t
   :hook (dired-mode . all-the-icons-dired-mode))
 
 ;; Tabs for organizing buffers
 (use-package centaur-tabs
   :demand
-  :ensure
   :config
   (centaur-tabs-mode t)
   (setq centaur-tabs-style "rounded")
@@ -409,7 +451,6 @@
 
 ;; None-essential configurattions
 (use-package dashboard
-  :ensure t
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-center-content t)
@@ -425,7 +466,6 @@
 
 ;; Theme - Doom
 (use-package doom-themes
-  :ensure t
   :config
   (setq doom-themes-enable-bold t
 	doom-themes-enable-italic t)
@@ -433,7 +473,6 @@
 
 ;; Mode line (doom-theme)
 (use-package doom-modeline
-  :ensure t
   :init
   (doom-modeline-mode 1)
   :config
@@ -454,8 +493,7 @@
 (add-to-list 'load-path "~/dotfiles/emacs.d/yhmacs/")
 
 ;;(require 'custom-org)
-;; (require 'custom-docker)
-(require 'lang-go)
+
 (require 'lang-javascript)
 
 ;; JSON mode, including formatting and some utility function.
@@ -464,27 +502,16 @@
 (defun yhou-json-mode-hook ()
   (setq tab-width 2))
 
-(use-package graphql-mode
-  :ensure t
-  :mode "\\.graphql\\'")
 
 (defun format-json-on-save ()
   "Format JSON file on Save"
   (when (eq major-mode 'json-mode)
     (json-pretty-print-buffer)))
 
-(use-package json-mode
-  :ensure t
-  :mode "\\.json\\'")
-
 (add-hook 'after-save-hook 'format-json-on-save)
 
-(require 'lang-php)
-(require 'lang-python)
-(require 'lang-sql)
-(require 'lang-tex)
 (require 'lang-typescript)
-(require 'lang-yaml)
+
 (require 'lang-web)
 (require 'key)
 (require 'custom-org)
@@ -497,12 +524,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; environments
-(use-package no-littering
-  :ensure t)
+(use-package no-littering)
+(unless (file-exists-p "~/.emacs.d/auto-save")
+  (make-directory "~/.emacs.d/auto-save") :parents)
 (setq auto-save-file-name-transforms
-      `((".*" ,(no-littering-expand-var-file-name "auto-save/") t)))
+      `((".*" ,"~/.emacs.d/auto-save/" t)))
 
-(setq custom-file "~/dotfiles/emacs.d/custom.el")
 (load custom-file)
 (setq exec-path (append exec-path '("~/go/bin")))
 (setq exec-path (append exec-path '("/usr/local/bin")))
@@ -512,13 +539,7 @@
 
 ;; save recent files
 (use-package recentf
-  :ensure t
   :config
   (setq recentf-save-file
 	(recentf-expand-file-name "~/.emacs.d/private/cache/recentf"))
   (recentf-mode 1))
-
-;; Garbage collection hack, may help emacs running faster
-(use-package gcmh
-  :diminish gcmh-mode
-  :ensure t)
