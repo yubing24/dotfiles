@@ -1,7 +1,19 @@
-;; My Emacs configuration
+;; init.el -- Yubing's Emacs configuration
+;;
+;; Copyright (c) 2021-2022 Yubing Hou
+;;
+;; Author: Yubing Hou <houyubing24@gmail.com>
+;;
+;; Description: personal Emacs configuration. Use this at your own risk.
+
+
 ;; Garbage collection threshold (for LSP)
 (setq gc-cons-threshold (* 100 1024 1024)) ;; 100 MB GC threshold, make thing faster. Suggested by emacs-lsp.github.io
 (setq read-process-output-max (* 5 1024 1024)) ;; 5 MB
+;; Do not warn about the file size unless it exceeds this amount
+(setq large-file-warning-threshold (* 50 1024 1024)) ;; 50 MB
+(size-indication-mode t) ;; show file size
+
 
 ;; Use Emacs Native
 (setq package-native-compile t)
@@ -28,9 +40,22 @@
 ;; This line may help with the freezing issue in Mac
 (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3")
 
+
+;; Loading newerly compiled packages
+(setq load-prefer-newer t) ;; Call this before package initialize
+
 (package-initialize) ;; initialize package list
 (unless package-archive-contents ;; useful when setting up a fresh new computer
   (package-refresh-contents))
+
+;; Make sre packages are automatically compiled
+(unless (package-installed-p 'auto-compile)
+  (package-install 'auto-compile))
+(require 'auto-compile)
+(auto-compile-on-load-mode)
+(auto-compile-on-save-mode)
+(setq auto-compile-display-buffer nil)
+(setq auto-compile-mode-line-counter t)
 
 ;; Use use-package for package management
 (unless (package-installed-p 'use-package) ;; if use-package is not installed
@@ -96,10 +121,10 @@
       confirm-nonexistent-file-or-buffer     t
       require-final-newline                  t)
 
-;; UI - Disable default start-up message
+;; UI - Start-up - Disable default start-up message
 (setq inhibit-startup-message t) ;; Disable start-up mesasge
 
-;; UI - Disable default start-up scree
+;; UI - Start-up - Disable default start-up scree
 (setq inhibit-startup-screen t)
 
 ;; UI - Disable menu bar
@@ -114,7 +139,7 @@
 ;; UI - Make scroling great again!
 (setq auto-window-vscroll nil)
 (setq fast-but-imprecise-scrolling t)
-(setq scroll-conservatively 101)
+(setq scroll-conservatively 100000)
 (setq scroll-margin 0)
 (setq scroll-preserve-screen-position t)
 
@@ -144,7 +169,6 @@
 (global-display-line-numbers-mode t) ;; show line number globally
 (dolist (mode '(org-mode-hook ;; exceptions where line number shall not show
                 term-mode-hook
-				sql-mode-hook
                 shell-mode-hook
                 treemacs-mode-hook
                 eshell-mode-hook))
@@ -162,11 +186,14 @@
 (setq-default indent-line-function 'insert-tab)
 
 ;; Editor - line highlight
-(global-hl-line-mode t)
+(global-hl-line-mode +1)
 
 ;; Editor - window navigation
 (when (fboundp 'windmove-default-keybindings)
   (windmove-default-keybindings))
+
+;; Editor - automatically revert bufer when files are changed by other programs
+(global-auto-revert-mode t)
 
 (use-package which-key
   :init
@@ -186,6 +213,7 @@
 
 ;; dired - show less when looking up files, and group directories first
 (use-package dired
+  :ensure nil ;; use-package doesn't always find it
   :commands (dired dired-jump)
   :custom
   ((dired-listing-switches "-agho --group-directories-first")))
@@ -270,6 +298,9 @@
 (use-package company-math)
 (use-package latex-pretty-symbols)
 
+;; Lisp
+(use-package lisp-mode
+  :ensure nil)
 
 (use-package markdown-mode)
 
@@ -283,14 +314,21 @@
 (use-package lsp-python-ms) ;; LSP-mode client for Microsoft Python
 
 (use-package rust-mode)
-(use-package sass-mode)
-(use-package scss-mode)
+
+;; SASS Stylesheet
+(use-package sass-mode
+  :mode "\\.sass\\'")
+
+;; SCSS Stylesheet
+(use-package scss-mode
+  :mode "\\.scss\\'")
 
 ;; SQL
 (use-package sqlformat)
 
+;; TypeScript
 (use-package typescript-mode
-  :mode)
+  :mode "\\.ts\\'")
 
 ;; Web development general settings
 (use-package web-mode)
@@ -536,6 +574,9 @@
 
 ;; [Editing]  Delete trailing whitespace before save
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+;; [Editing] make table always indent or complete
+(setq tab-always-indent 'complete)
 
 ;; save recent files
 (use-package recentf
