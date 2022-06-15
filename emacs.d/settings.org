@@ -35,6 +35,7 @@
 
 ;; Keep packages always up to date
 (use-package auto-package-update
+  :diminish
   :config
   (setq auto-package-update-delete-old-versions t)
   (setq auto-package-update-hide-results t)
@@ -43,13 +44,15 @@
   (auto-package-update-maybe))
 
 ;; Enable this extension
-(use-package use-package-ensure-system-package)
+(use-package use-package-ensure-system-package
+  :diminish)
 #+END_SRC
 
 ** External Program Execution Path
 #+begin_src emacs-lisp
 ;; Include other paths from shell
-(use-package exec-path-from-shell)
+(use-package exec-path-from-shell
+  :diminish)
 (when (memq window-system '(mac ns x)) ;; Initialize exec-path when launching a stand-alone Emacs
   (exec-path-from-shell-initialize))
 (when (daemonp)
@@ -62,18 +65,21 @@
       exec-path (append exec-path '("~/.local/bin")))
 
 ;; Include executables from node_modules/
-(use-package add-node-modules-path)
+(use-package add-node-modules-path
+  :diminish)
 #+end_src
 
 ** No-littering
 Keep the configuration folder clean.
 #+begin_src emacs-lisp
-(use-package no-littering)
+(use-package no-littering
+  :diminish)
 #+end_src
 
 ** Keymap Prompt
 #+begin_src emacs-lisp
 (use-package which-key
+  :diminish
   :init (which-key-mode)
   :config
   (setq which-key-idle-delay 0.3))
@@ -143,6 +149,7 @@ Install OrgMode first
 Use a better looking header system. Bullets is a bit old.
 #+begin_src emacs-lisp
 (use-package org-superstar
+  :diminish
   :pin melpa
   :after org
   :hook (org-mode . org-superstar-mode) ;; setup minor mode
@@ -195,6 +202,7 @@ Hide Scroll Bar because it's pointless, since my fingers are not leaving the key
 *** Theme
 #+BEGIN_SRC emacs-lisp
 (use-package doom-themes
+  :diminish
   :config
   (setq doom-themes-enable-bold t
 	      doom-themes-enable-italic t)
@@ -203,15 +211,17 @@ Hide Scroll Bar because it's pointless, since my fingers are not leaving the key
 
 *** Icons
 #+BEGIN_SRC emacs-lisp
-(use-package all-the-icons)
+(use-package all-the-icons
+  :diminish)
 (use-package all-the-icons-dired
+  :diminish
   :hook (dired-mode . all-the-icons-dired-mode))
 #+END_SRC
 
 *** Tabs (Centaur)
 #+begin_src emacs-lisp
 (use-package centaur-tabs
-  :demand
+  :diminish
   :config
   (set-face-attribute 'centaur-tabs-active-bar-face nil :background "red")
   (centaur-tabs-mode t)
@@ -236,10 +246,6 @@ Hide Scroll Bar because it's pointless, since my fingers are not leaving the key
   (dashboard-mode . centaur-tabs-local-mode)
   (calendar-mod . centaur-tabs-local-mode)
   (org-agenda-mode . centaur-tabs-local-mode))
-
-;; Order Centaur tabs alphabetically
-(centaur-tabs-enable-buffer-alphabetical-reordering)
-(setq centaur-tabs-adjust-buffer-order t)
 #+end_src
 *** Modeline
 Use Doom moodline here.
@@ -336,6 +342,16 @@ Add space between editor and line numbers
 
 * Editing Behavior
 
+** Cursor
+Use Beacon to never lose cursor again
+#+begin_src emacs-lisp
+(use-package beacon
+  :diminish
+  :config (setq beacon-color"#666600")
+  :init
+  (beacon-mode 1))
+#+end_src
+
 ** Delete selected text
 Emacs does not have the "normal" editing behavior. Here are some configurations to make it closer to the de-facto editors.
 #+begin_src emacs-lisp
@@ -385,6 +401,7 @@ Customization for navigating within Emacs.
 ** Ace Window - Jumping between windows
 #+begin_src emacs-lisp
 (use-package ace-window
+  :diminish
   :config
   (global-set-key (kbd "M-o") 'ace-window))
 #+end_src
@@ -395,13 +412,15 @@ Customization for navigating within Emacs.
 I use Ag for searching.
 #+begin_src emacs-lisp
 (use-package ag
+  :diminish
   :config
   (setq ag-highlight-search t))
 #+end_src
 
 *** Swiper
 #+begin_src emacs-lisp
-(use-package swiper)
+(use-package swiper
+  :diminish)
 #+end_src
 
 * Command
@@ -415,6 +434,7 @@ I use Ag for searching.
 		 ("C-x C-f" . counsel-find-file)))
 
 (use-package ivy
+  :diminish
   :config
   (ivy-mode 1) ;; ensure ivy always runs
   (setq ivy-use-virtual-buffers t)
@@ -423,15 +443,19 @@ I use Ag for searching.
   :bind(("C-s" . swiper-isearch)))
 
 (use-package ivy-rich
+  :diminish
   :after ivy
   :init
   (ivy-rich-mode 1))
 #+end_src
 ** Text Folding
 #+begin_src emacs-lisp
-(use-package s)
-(use-package dash)
+(use-package s
+  :diminish)
+(use-package dash
+  :diminish)
 (use-package origami
+  :diminish
   :init
   (global-origami-mode t))
 #+end_src
@@ -440,6 +464,7 @@ I use Ag for searching.
 * Dashboard
 #+begin_src emacs-lisp
 (use-package dashboard
+  :diminish
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-center-content t)
@@ -458,7 +483,8 @@ I use Ag for searching.
 
 ** Magit
 #+begin_src emacs-lisp
-(use-package magit)
+(use-package magit
+  :diminish)
 #+end_src
 
 * Development
@@ -480,12 +506,24 @@ I use Ag for searching.
   :defer t)
 (use-package js2-mode
   :hook add-node-modules-path) ; JavaScript
+#+end_src
+
+*** JSON
+#+begin_src emacs-lisp
 (use-package json-mode
   :ensure-system-package (vscode-json-languageserver . "npm i -g vscode-json-languageserver")
-  :defer t) ; JSON file
+  :defer t) ;JSON file
+#+end_src
+
+*** Markdown
+#+begin_src emacs-lisp
 (use-package markdown-mode
   :ensure-system-package (unified-language-server . "npm i -g unified-language-server")
   :defer t)
+#+end_src
+
+*** PHP
+#+begin_src emacs-lisp
 (use-package php-mode
   :ensure-system-package (intelephense . "npm i -g intelephense")
   :defer t) ; php
@@ -552,20 +590,25 @@ Code should be formatted upon saving them.
 #+begin_src emacs-lisp
 ;; TODO Format Golang Program
 
-;; Format JavaScript/Typescript
+;; Format JavaScript/Typescript/JSON
 (defun prettify-ecmascript-before-save()
   "Format ECMAScripts (.js/.ts) before saving."
-  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode)) (prettier-js)))
-(add-hook 'before-save-hook 'prettify-ecmascript-before-save)
+  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode) (eq major-mode 'json-mode)) (prettier-js)))
+(add-hook 'before-save-hook #'prettify-ecmascript-before-save)
 #+end_src
 *** JSON
 Indentation should be 2-character long, and should automatically format when saving file
 #+begin_src emacs-lisp
+(defun format-json-before-save ()
+  "Format JSON file before saving it."
+  (when (eq major-mode 'json-mode) (json-pretty-print-buffer)))
+(add-hook 'before-save-hook #'format-json-before-save)
 #+end_src
 *** ECMAScripts (JS/TS)
 #+begin_src emacs-lisp
 ;; Use Prettier for code formatting
 (use-package prettier-js
+  :diminish
   :after (add-node-modules-path)
   :ensure-system-package (prettier . "npm i -g prettier")
   :hook (js2-mode . prettier-js-mode)
