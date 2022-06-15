@@ -1,0 +1,620 @@
+* System Configuration
+
+** Garbage Collection
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold (* 10 1024 1024)) ;; 10 MB
+(setq read-process-output-max (* 128 1024 1024))
+(message "Garbage collection configured")
+#+END_SRC
+
+** Turn off debugging & warning
+#+begin_src emacs-lisp
+(setq debug-on-error nil)
+(setq debug-on-quit nil)
+#+end_src
+
+** Text Encoding
+#+begin_src emacs-lisp
+(set-charset-priority        'unicode)
+(setq locale-coding-system   'utf-8)
+(set-terminal-coding-system  'utf-8)
+(set-keyboard-coding-system  'utf-8)
+(set-selection-coding-system 'utf-8)
+(prefer-coding-system        'utf-8)
+(setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+#+end_src
+
+** Package Management
+#+BEGIN_SRC emacs-lisp
+(unless (package-installed-p 'use-package) ;; if use-package is not installed
+  (package-install 'use-package)) ;; install use-package
+(require 'use-package)
+(require 'use-package-ensure)
+(setq use-package-always-ensure t) ; Make sure packages are alwys installed
+(message "use-package is configured")
+
+;; Keep packages always up to date
+(use-package auto-package-update
+  :config
+  (setq auto-package-update-delete-old-versions t)
+  (setq auto-package-update-hide-results t)
+  (setq auto-package-update-interval 14) ;; days
+  (setq auto-package-update-prompt-before-update t) ;; ask me before proceeding
+  (auto-package-update-maybe))
+
+;; Enable this extension
+(use-package use-package-ensure-system-package)
+#+END_SRC
+
+** External Program Execution Path
+#+begin_src emacs-lisp
+(setq exec-path (append exec-path '("/usr/local/bin"))
+      exec-path (append exec-path '("~/go/bin"))
+      exec-path (append exec-path '("~/.npm-global/bin"))
+      exec-path (append exec-path '("~/.local/bin")))
+
+;; Include executables from node_modules/
+(use-package add-node-modules-path)
+#+end_src
+
+** No-littering
+Keep the configuration folder clean.
+#+begin_src emacs-lisp
+(use-package no-littering)
+#+end_src
+
+** Keymap Prompt
+#+begin_src emacs-lisp
+(use-package which-key
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 0.3))
+#+end_src
+
+** Mac-specific settings
+#+begin_src emacs-lisp
+(if (eq system-type 'darwin)
+	(progn
+	  (setq insert-directory-program "gls" dired-use-ls-dired t))) ; If not set, Emacs can't use Dired on mac.
+#+end_src
+
+* Org Mode
+** Font
+#+begin_src emacs-lisp
+(defun yhou-org-font-setup ()
+  ;; Replace list hyphen with dot
+  (font-lock-add-keywords 'org-mode
+                          '(("^ *\\([-]\\) "
+                             (0 (prog1 () (compose-region (match-beginning 1) (match-end 1) "•"))))))
+
+  ;; Set faces for heading levels
+  (dolist (face '((org-level-1 . 1.6)
+                  (org-level-2 . 1.5)
+                  (org-level-3 . 1.4)
+                  (org-level-4 . 1.3)
+                  (org-level-5 . 1.2)
+                  (org-level-6 . 1.1)
+                  (org-level-7 . 1.1)
+                  (org-level-8 . 1.1)))
+    (set-face-attribute (car face) nil :font "JetBrains Mono" :weight 'regular :height (cdr face)))
+
+  ;; Ensure that anything that should be fixed-pitch in Org files appears that way
+  (set-face-attribute 'org-block nil :foreground nil :inherit 'fixed-pitch)
+  (set-face-attribute 'org-code nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-table nil   :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-verbatim nil :inherit '(shadow fixed-pitch))
+  (set-face-attribute 'org-special-keyword nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-meta-line nil :inherit '(font-lock-comment-face fixed-pitch))
+  (set-face-attribute 'org-checkbox nil :inherit 'fixed-pitch))
+#+end_src
+
+Install OrgMode first
+#+begin_src emacs-lisp
+(defun yhou-org-custom-setup()
+  (org-indent-mode)
+  (auto-fill-mode 0)
+  (visual-line-mode 0))
+
+(use-package org
+  :pin elpa
+  :hook (org-mode . yhou-org-custom-setup)
+  :config
+  (setq org-ellipsis " ▾")
+  (setq org-confirm-babel-evaluate nil))
+(yhou-org-font-setup)
+#+end_src
+
+
+#+begin_src emacs-lisp
+(setq org-variable-pitch-mode 1)
+(setq visual-line-mode 0)
+#+end_src
+
+
+** Bullets
+Use a better looking header system. Bullets is a bit old.
+#+begin_src emacs-lisp
+(use-package org-superstar
+  :pin melpa
+  :after org
+  :hook (org-mode . org-superstar-mode) ;; setup minor mode
+  :config (set-face-attribute 'org-superstar-header-bullet nil :inherit 'fixed-pitched :height 180)
+  :custom
+  (org-superstar-special-todo-items t)
+  (org-superstart-leading-bullet ""))
+#+end_src
+
+* User Interface
+** Application
+*** Start-up
+Disable start up screen and message
+#+begin_src emacs-lisp
+;; Disable default start-up message
+(setq inhibit-startup-message t)
+
+;; Disable default start-up scree
+(setq inhibit-startup-screen t)
+
+;; Maximize frame on startup
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+#+end_src
+*** Menu Bar
+Turn off menu bar because I can use more vertical space
+#+BEGIN_SRC emacs-lisp
+(menu-bar-mode -1)
+#+END_SRC
+*** Tool Bar
+Turn off tool bar for more vertical space
+#+begin_src emacs-lisp
+(tool-bar-mode -1)
+#+end_src
+*** Scroll Bar
+Hide Scroll Bar because it's pointless, since my fingers are not leaving the keyboard
+#+begin_src emacs-lisp
+(scroll-bar-mode -1)
+#+end_src
+
+*** Dired (file browser)
+#+begin_src emacs-lisp
+;; dired - show less when looking up files, and group directories first
+(use-package dired
+  :ensure nil ;; Set it to nil because I am using use-package to configure dired, not installing it.
+  :commands (dired dired-jump)
+  :custom
+  ((dired-listing-switches "-agho --group-directories-first")))
+#+end_src
+
+*** Theme
+#+BEGIN_SRC emacs-lisp
+(use-package doom-themes
+  :config
+  (setq doom-themes-enable-bold t
+	      doom-themes-enable-italic t)
+  (load-theme 'doom-oceanic-next t))
+#+END_SRC
+
+*** Icons
+#+BEGIN_SRC emacs-lisp
+(use-package all-the-icons)
+(use-package all-the-icons-dired
+  :hook (dired-mode . all-the-icons-dired-mode))
+#+END_SRC
+
+*** Tabs (Centaur)
+#+begin_src emacs-lisp
+(use-package centaur-tabs
+  :demand
+  :config
+  (set-face-attribute 'centaur-tabs-active-bar-face nil :background "red")
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-style "bar")
+  (setq centaur-tabs-height 32)
+  (setq centaur-tabs-set-icons t)
+  (setq centaur-tabs-set-bar 'under)
+  (setq x-underline-at-descent-line t) ; required if spacemacs is not used
+  (setq centaur-tabs-close-button "x")
+  (setq centaur-tabs-modified-marker "*")
+  (setq centaur-tabs-enable-key-bindings t)
+  (setq centaur-tabs-show-navigation-buttons t)
+  :bind
+  ("C-<iso-lefttab>" . centaur-tabs-backward)
+  ("C-<tab>" . centaur-tabs-forward)
+  ("C-c t s" . centaur-tabs-counsel-switch-group)
+  ("C-c t p" . centaur-tabs-group-by-projectile-project)
+  ("C-c t g" . centaur-tabs-group-buffer-groups)
+  :hook
+  (dired-mode . centaur-tabs-local-mode)
+  (term-mode . centaur-tabs-local-mode)
+  (dashboard-mode . centaur-tabs-local-mode)
+  (calendar-mod . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode))
+
+;; Order Centaur tabs alphabetically
+(centaur-tabs-enable-buffer-alphabetical-reordering)
+(setq centaur-tabs-adjust-buffer-order t)
+#+end_src
+*** Modeline
+Use Doom moodline here.
+#+BEGIN_SRC emacs-lisp
+(use-package doom-modeline
+  :init
+  (doom-modeline-mode 1)
+  :config
+  (setq doom-modeline-height 32)
+  (setq doom-modeline-bar-width 12)
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-minor-modes nil)
+  (setq doom-modeline-buffer-file-name-style 'relative-from-project)
+  (setq doom-modeline-buffer-state-icon t)
+  (setq doom-modeline-buffer-modification-icon t)
+  (setq doom-modeline-icon (display-graphic-p))
+  (setq doom-modeline-indent-info t)
+  (setq doom-modeline-lsp t))
+#+END_SRC
+
+*** Notification
+Disable the annoying blinking when emacs trying to hint me that something is not working
+#+begin_src emacs-lisp
+(setq ring-bell-function 'ignore)
+#+end_src
+*** Bookmark
+#+begin_src emacs-lisp
+(setq bookmark-save-flag t ;; persistent bookmarks
+      bookmark-default-file (concat temporary-file-directory "/bookmarks"))
+#+end_src
+*** Interactive Prompt
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+(setq confirm-kill-emacs 'y-or-n-p)
+#+end_src
+
+*** Exit Interactive Prompt
+#+begin_src emacs-lisp
+;; Prompt - ESC to leave
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+#+end_src
+
+** Editor
+
+*** Font
+
+**** Scale
+Set font scale for regular Linux and Mac.
+#+begin_src emacs-lisp
+(defvar yhou-font-scale 100)
+
+;; Macbook specific configuration: retina display makes everthing small
+(if (eq system-type 'darwin)
+    (setq yhou-font-scale 140))
+
+(if (eq system-type 'gnu/linux)
+    (setq yhou-font-scale 100))
+#+end_src
+
+**** Font Family
+Use JetBrains's font since it is the best
+#+begin_src bash
+sudo apt update && sudo apt upgrade -y
+#+end_src
+
+#+begin_src emacs-lisp
+(set-face-attribute 'default nil :font "JetBrains Mono" :height yhou-font-scale)
+(set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height yhou-font-scale)
+(set-face-attribute 'variable-pitch nil :font "Ubuntu" :weight 'medium :height yhou-font-scale)
+#+end_src
+
+*** Line Number
+Make line number visible globally
+#+begin_src emacs-lisp
+(global-display-line-numbers-mode t)
+#+end_src
+
+Column number
+#+begin_src emacs-lisp
+(column-number-mode 1)
+#+end_src
+
+Highlight current line:
+#+begin_src emacs-lisp
+(global-hl-line-mode t)
+#+end_src
+
+*** Spacing
+Add space between editor and line numbers
+#+begin_src emacs-lisp
+(set-fringe-mode 16)
+#+end_src
+
+* Editing Behavior
+
+** Delete selected text
+Emacs does not have the "normal" editing behavior. Here are some configurations to make it closer to the de-facto editors.
+#+begin_src emacs-lisp
+(delete-selection-mode t) ; Always delet the selected text with a key stroke
+#+end_src
+
+** Refresh buffer when file is changed
+#+begin_src emacs-lisp
+(global-auto-revert-mode t)
+#+end_src
+
+** Delete trailing white space
+#+begin_src emacs-lisp
+(add-hook 'before-save-hook 'delete-trailing-whitespace)
+#+end_src
+
+** Tab key should be auto-completion
+#+begin_src emacs-lisp
+(setq tab-always-indent 'complete)
+#+end_src
+
+
+* Navigation
+Customization for navigating within Emacs.
+
+** Ace Window - Jumping between windows
+#+begin_src emacs-lisp
+(use-package ace-window
+  :config
+  (global-set-key (kbd "M-o") 'ace-window))
+#+end_src
+
+** Search
+
+*** Text Search
+I use Ag for searching.
+#+begin_src emacs-lisp
+(use-package ag
+  :config
+  (setq ag-highlight-search t))
+#+end_src
+
+*** Swiper
+#+begin_src emacs-lisp
+(use-package swiper)
+#+end_src
+
+* Command
+** Completion (Ivy)
+#+begin_src emacs-lisp
+;; Provide additional documation when Ivy is triggered
+(use-package counsel
+  :diminish
+  :bind (("M-x" . counsel-M-x)
+		 ("C-x b" . counsel-ibuffer)
+		 ("C-x C-f" . counsel-find-file)))
+
+(use-package ivy
+  :config
+  (ivy-mode 1) ;; ensure ivy always runs
+  (setq ivy-use-virtual-buffers t)
+  (setq ivy-height 20)
+  (setq ivy-count-format "%d/%d ")
+  :bind(("C-s" . swiper-isearch)))
+
+(use-package ivy-rich
+  :after ivy
+  :init
+  (ivy-rich-mode 1))
+#+end_src
+** Text Folding
+#+begin_src emacs-lisp
+(use-package s)
+(use-package dash)
+(use-package origami
+  :init
+  (global-origami-mode t))
+#+end_src
+
+
+* Dashboard
+#+begin_src emacs-lisp
+(use-package dashboard
+  :config
+  (dashboard-setup-startup-hook)
+  (setq dashboard-center-content t)
+  (setq dashboard-set-footer nil)
+  (setq dashboard-projects-backend 'projectile)
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-set-file-icons t)
+  (setq dashboard-banner-logo-title "")
+  (setq dashboard-items '((recents . 10)
+			  (projects . 10)
+			  (agenda . 10))))
+#+end_src
+
+* Version Control
+
+** Magit
+#+begin_src emacs-lisp
+(use-package magit)
+#+end_src
+
+* Development
+
+** Programming Languages & Frameworks
+#+begin_src emacs-lisp
+;; Angular 2+
+(use-package ng2-mode
+  :ensure-system-package ()
+  :ensure-system-package ()
+  :defer t)
+
+(use-package dockerfile-mode
+  :ensure-system-package (dockerfile-language-server-nodejs . "npm i -g dockerfile-language-server-nodejs")
+  :defer t)
+(use-package go-mode
+  :ensure-system-package (gopls . "go install golang.org/x/tools/gopls@latest")
+  :defer t) ; GoLang
+(use-package graphql-mode
+  :ensure-system-package (graphql-language-service-cli . "npm i -g graphql-language-service-cli")
+  :defer t)
+(use-package js2-mode
+  :hook add-node-modules-path) ; JavaScript
+(use-package json-mode
+  :ensure-system-package (vscode-json-languageserver . "npm i -g vscode-json-languageserver")
+  :defer t) ; JSON file
+(use-package markdown-mode
+  :ensure-system-package (unified-language-server . "npm i -g unified-language-server")
+  :defer t)
+(use-package php-mode
+  :ensure-system-package (intelephense . "npm i -g intelephense")
+  :defer t) ; php
+(use-package python-mode) ; Python
+(use-package scss-mode
+  :ensure-system-package (vscode-css-languageserver-bin . "npm install -g vscode-css-languageserver-bin")
+  :defer t)
+(use-package typescript-mode
+  :ensure-system-package (typescript-language-server . "npm i -g typescript-language-server")
+  :ensure-system-package (tsc . "npm i -g typescript")
+  :hook(typescript-mode . add-node-modules-path)
+  :defer t) ; TypeScript
+(use-package web-mode
+  :ensure-system-package (vscode-html-languageserver-bin . "npm install -g vscode-html-languageserver-bin")
+  :defer t) ; General web development
+(use-package yaml-mode
+  :ensure-system-package (yaml-language-server . "npm install -g yaml-language-server")
+  :defer t) ; YAML file
+#+end_src
+
+** Language Server Protocol (LSP)
+#+begin_src emacs-lisp
+(use-package lsp-mode
+  :init
+  (setq lsp-keymap-prefix "C-c l")
+  :commands (lsp lsp-deferred)
+  :hook (go-mode . lsp-deferred)
+  :hook (js2-mode . lsp-deferred)
+  :hook (php-mode . lsp-deferred)
+  :hook (python-mode . lsp-deferred)
+  :hook (sql-mode . lsp-deferred)
+  :hook (tex-mode . lsp-deferred)
+  :hook (typescript-mode . lsp-deferred)
+  :hook (web-mode . lsp-deferred)
+  :config
+  (setq lsp-idle-delay 0.2)
+  (setq lsp-log-io nil)
+  (lsp-enable-which-key-integration t)) ; Setting to true will have large performance hit
+
+(use-package lsp-ivy
+  :commands lsp-ivy-workspace-symbol)
+
+(use-package lsp-ui
+  :commands (lsp-ui-mode)
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq lsp-ui-doc-enable t) ;; enable documentation view
+  (setq lsp-ui-doc-position "top")
+  (setq lsp-ui-doc-delay 0.3)
+  (setq lsp-ui-doc-show-with-cursor t))
+#+end_src
+** Language-specific Controls
+*** Program formatters
+Code should be formatted upon saving them.
+#+begin_src emacs-lisp
+;; TODO Format Golang Program
+
+;; Format JavaScript/Typescript
+(defun prettify-ecmascript-before-save()
+  "Format ECMAScripts (.js/.ts) before saving."
+  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode)) (prettier-js)))
+(add-hook 'before-save-hook 'prettify-ecmascript-before-save)
+#+end_src
+*** JSON
+Indentation should be 2-character long, and should automatically format when saving file
+#+begin_src emacs-lisp
+#+end_src
+*** ECMAScripts (JS/TS)
+#+begin_src emacs-lisp
+;; Use Prettier for code formatting
+(use-package prettier-js
+  :after (add-node-modules-path)
+  :hook (js2-mode . prettier-js-mode)
+  :hook (web-mode . prettier-js-mode)
+  :hook (typescript-mode . prettier-js-mode))
+
+;; Use ES-lint to fix code issues, such as unused imports
+(use-package eslint-fix)
+
+;; Indentation tab and size
+(defun set-ecmascript-indentation()
+  "Set ECMAScripts (.js/.ts) indentation to 2 spaces."
+  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode))
+    (setq-default indent-tabs-mode nil)
+    (setq-default tab-width 2)
+    (setq indent-line-function 'insert-tab)))
+(add-hook 'js2-mode-hook 'set-ecmascript-indentation)
+(add-hook 'typescript-mode-hook 'set-ecmascript-indentation)
+
+;; ESlint hook - lint code before save
+(add-hook 'js2-mode-hook 'eslint-fix-auto-mode)
+(add-hook 'typescript-mode-hook (lambda ()
+                                  (add-hook 'before-save-hook 'eslint-fix nil t)))
+#+end_src
+* Auto-completion
+#+begin_src emacs-lisp
+(use-package company
+  :config
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 2))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+* Project Management
+
+** Projectile
+#+begin_src emacs-lisp
+(use-package projectile
+  :init
+  (projectile-mode +1)
+  :bind (("C-c p" . projectile-command-map))
+  :custom((projectile-completion-system 'ivy)))
+#+end_src
+
+* Other Tools
+
+** Collection of Ridiculously Useful eXtensions (CRUX)
+#+begin_src emacs-lisp
+(use-package crux)
+#+end_src
+
+* Key Bindings
+Centralized place to manage all key bindings in Emacs.
+
+#+begin_src emacs-lisp
+;; Refresh buffer
+(global-set-key (kbd "C-S-r") 'revert-buffer)
+
+;; Editing
+(define-prefix-command 'edit-key-map)
+(global-set-key (kbd "C-c e") 'edit-key-map)
+
+;; Searching
+(define-prefix-command 'search-key-map)
+(global-set-key (kbd "C-c s") 'search-key-map)
+(define-key 'search-key-map (kbd "f") 'ag-project)
+
+;; Viewing
+(define-prefix-command 'view-key-map)
+(global-set-key (kbd "C-c v") 'view-key-map)
+(define-key 'view-key-map (kbd "o n") 'origami-open-node)
+(define-key 'view-key-map (kbd "c n") 'origami-close-node)
+(define-key 'view-key-map (kbd "O n") 'origami-open-all-nodes)
+(define-key 'view-key-map (kbd "C n") 'origami-close-all-nodes)
+
+;; Coding
+(define-prefix-command 'code-key-map)
+(global-set-key (kbd "C-c c") 'code-key-map)
+(define-key 'code-key-map (kbd "f d") 'lsp-find-definition)
+(define-key 'code-key-map (kbd "f i") 'lsp-find-implementation)
+(define-key 'code-key-map (kbd "f r") 'lsp-find-references)
+(define-key 'code-key-map (kbd "f b") 'lsp-format-buffer)
+
+;; Window/Buffer-managing
+(define-prefix-command 'window-key-map)
+(global-set-key (kbd "C-c w") 'window-key-map)
+#+end_src

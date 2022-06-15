@@ -42,3 +42,6 @@ eln-cache/
 
 # ignore SQL workspace configuration
 sql-workspace/config.json
+
+# Generated Emacs configuration file
+settings.el
