@@ -48,6 +48,14 @@
 
 ** External Program Execution Path
 #+begin_src emacs-lisp
+;; Include other paths from shell
+(use-package exec-path-from-shell)
+(when (memq window-system '(mac ns x)) ;; Initialize exec-path when launching a stand-alone Emacs
+  (exec-path-from-shell-initialize))
+(when (daemonp)
+  (exec-path-from-shell-initialize)) ;; Initialize exec-path when running Emacs as a client/service
+
+;; Additional custom executables
 (setq exec-path (append exec-path '("/usr/local/bin"))
       exec-path (append exec-path '("~/go/bin"))
       exec-path (append exec-path '("~/.npm-global/bin"))
@@ -349,6 +357,27 @@ Emacs does not have the "normal" editing behavior. Here are some configurations 
 (setq tab-always-indent 'complete)
 #+end_src
 
+** Auto-completion
+#+begin_src emacs-lisp
+(use-package company
+  :init
+  (global-company-mode)
+  :config
+  (setq company-tooltip-align-annotations t)
+  (setq company-idle-delay 0.2)
+  (setq company-minimum-prefix-length 2))
+
+(use-package company-box
+  :hook (company-mode . company-box-mode))
+#+end_src
+
+** Syntax Checker
+#+begin_src emacs-lisp
+(use-package flycheck
+  :init
+  (global-flycheck-mode))
+#+end_src
+
 
 * Navigation
 Customization for navigating within Emacs.
@@ -438,8 +467,6 @@ I use Ag for searching.
 #+begin_src emacs-lisp
 ;; Angular 2+
 (use-package ng2-mode
-  :ensure-system-package ()
-  :ensure-system-package ()
   :defer t)
 
 (use-package dockerfile-mode
@@ -466,11 +493,20 @@ I use Ag for searching.
 (use-package scss-mode
   :ensure-system-package (vscode-css-languageserver-bin . "npm install -g vscode-css-languageserver-bin")
   :defer t)
+#+end_src
+*** TypeScript
+#+begin_src emacs-lisp
 (use-package typescript-mode
+  :init
+  (setq indent-tabs-mode nil)
+  (setq typescript-indent-level 2)
   :ensure-system-package (typescript-language-server . "npm i -g typescript-language-server")
   :ensure-system-package (tsc . "npm i -g typescript")
   :hook(typescript-mode . add-node-modules-path)
   :defer t) ; TypeScript
+#+end_src
+*** Web
+#+begin_src emacs-lisp
 (use-package web-mode
   :ensure-system-package (vscode-html-languageserver-bin . "npm install -g vscode-html-languageserver-bin")
   :defer t) ; General web development
@@ -531,37 +567,10 @@ Indentation should be 2-character long, and should automatically format when sav
 ;; Use Prettier for code formatting
 (use-package prettier-js
   :after (add-node-modules-path)
+  :ensure-system-package (prettier . "npm i -g prettier")
   :hook (js2-mode . prettier-js-mode)
   :hook (web-mode . prettier-js-mode)
   :hook (typescript-mode . prettier-js-mode))
-
-;; Use ES-lint to fix code issues, such as unused imports
-(use-package eslint-fix)
-
-;; Indentation tab and size
-(defun set-ecmascript-indentation()
-  "Set ECMAScripts (.js/.ts) indentation to 2 spaces."
-  (when (or (eq major-mode 'js2-mode) (eq major-mode 'typescript-mode))
-    (setq-default indent-tabs-mode nil)
-    (setq-default tab-width 2)
-    (setq indent-line-function 'insert-tab)))
-(add-hook 'js2-mode-hook 'set-ecmascript-indentation)
-(add-hook 'typescript-mode-hook 'set-ecmascript-indentation)
-
-;; ESlint hook - lint code before save
-(add-hook 'js2-mode-hook 'eslint-fix-auto-mode)
-(add-hook 'typescript-mode-hook (lambda ()
-                                  (add-hook 'before-save-hook 'eslint-fix nil t)))
-#+end_src
-* Auto-completion
-#+begin_src emacs-lisp
-(use-package company
-  :config
-  (setq company-idle-delay 0.2)
-  (setq company-minimum-prefix-length 2))
-
-(use-package company-box
-  :hook (company-mode . company-box-mode))
 #+end_src
 
 * Project Management

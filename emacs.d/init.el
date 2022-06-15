@@ -32,4 +32,6 @@
 (setq org-edit-src-content-indentation 0)
 (org-babel-load-file
  (expand-file-name "settings.org"
-		   user-emacs-directory))
+		               user-emacs-directory))
+(provide 'init)
+;;; init.el ends here
