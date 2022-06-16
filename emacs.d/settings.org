@@ -51,12 +51,11 @@
 ** External Program Execution Path
 #+begin_src emacs-lisp
 ;; Include other paths from shell
-(use-package exec-path-from-shell
-  :diminish)
-(when (memq window-system '(mac ns x)) ;; Initialize exec-path when launching a stand-alone Emacs
-  (exec-path-from-shell-initialize))
-(when (daemonp)
-  (exec-path-from-shell-initialize)) ;; Initialize exec-path when running Emacs as a client/service
+(use-package exec-path-from-shell)
+;(when (memq window-system '(mac ns x)) ;; Initialize exec-path when launching a stand-alone Emacs
+ ; (exec-path-from-shell-initialize))
+;(when (daemonp)
+ ; (exec-path-from-shell-initialize)) ;; Initialize exec-path when running Emacs as a client/service
 
 ;; Additional custom executables
 (setq exec-path (append exec-path '("/usr/local/bin"))
