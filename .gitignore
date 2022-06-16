@@ -9,6 +9,9 @@ ssh/
 # no org roam indexing db
 *.db
 
+# Mac
+.DS_Store
+
 # no emacs custom files
 ac-comphist.dat
 auto-save-list/

@@ -570,6 +570,8 @@ I use Ag for searching.
   :hook (typescript-mode . lsp-deferred)
   :hook (web-mode . lsp-deferred)
   :config
+  (setq lsp-enable-file-watchers t) ; LSP should always watch files
+  (setq lsp-file-watch-threshold 40000) ; it's not uncommon to have a large node_modules/
   (setq lsp-idle-delay 0.2)
   (setq lsp-log-io nil)
   (lsp-enable-which-key-integration t)) ; Setting to true will have large performance hit
