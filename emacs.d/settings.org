@@ -390,7 +390,7 @@ Emacs does not have the "normal" editing behavior. Here are some configurations 
 #+begin_src emacs-lisp
 (use-package flycheck
   :init
-  (global-flycheck-mode))
+  (setq global-flycheck-mode 1))
 #+end_src
 
 
@@ -485,7 +485,10 @@ I use Ag for searching.
 (use-package magit
   :diminish)
 #+end_src
-
+** Git Mode
+#+begin_src emacs-lisp
+(use-package git-modes)
+#+end_src
 * Development
 
 ** Programming Languages & Frameworks
