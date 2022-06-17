@@ -185,6 +185,10 @@ Use a better looking header system. Bullets is a bit old.
   (org-superstart-leading-bullet ""))
 #+end_src
 
+** Org Babel
+#+begin_src emacs-lisp
+#+end_src
+
 * User Interface
 ** Application
 *** Start-up
@@ -408,7 +412,7 @@ Emacs does not have the "normal" editing behavior. Here are some configurations 
   (global-company-mode)
   :config
   (setq company-tooltip-align-annotations t)
-  (setq company-idle-delay 0.2)
+  (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 2))
 
 (use-package company-box
