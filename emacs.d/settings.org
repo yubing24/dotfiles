@@ -526,6 +526,8 @@ I use Ag for searching.
   :bind (("M-x" . counsel-M-x)
 		 ("C-x b" . counsel-ibuffer)
 		 ("C-x C-f" . counsel-find-file)))
+;; Counsel integration with projectile
+(use-package counsel-projectile)
 
 (use-package ivy
   :diminish
@@ -565,19 +567,27 @@ I use Ag for searching.
   :after page-break-lines
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-banner-logo-title "Dashboard")
+  (setq dashboard-set-init-info t) ;; Show loading time
   (setq dashboard-center-content t)
-  (setq dashboard-set-footer nil)
+  (setq dashboard-set-footer t)
+  (setq dashboard-footer-icon (all-the-icons-octicon "dashboard"
+                                                   :height 1.1
+                                                   :v-adjust -0.05
+                                                   :face 'font-lock-keyword-face))
   (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-set-heading-icons nil)
+  (setq dashboard-startup-banner 'official)
   (setq dashboard-set-navigator t)
-  (setq dashboard-startup-banner nil)
   (setq dashboard-set-file-icons t)
   (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  ;; Customize widgets that are displayed
   (setq dashboard-items '((recents . 5)
 			  (projects . 5)
 			  (agenda . 5)
-			  (bookmarks . 5))))
+			  (bookmarks . 5)))
+  ;; SHow agenda of the week
+  (setq dashboard-week-agenda t)
+  ;; Add Icons to widget heading
+  (setq dashboard-set-heading-icons t))
 ;; If Emacs is started as a client, go to the dashboard buffer on start up
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
@@ -628,7 +638,7 @@ I use Ag for searching.
 *** JavaScript
 #+begin_src emacs-lisp
 (use-package js2-mode
-  :hook add-node-modules-path) ; JavaScript
+  :hook add-node-modules-path)
 #+end_src
 
 *** JSON
@@ -674,20 +684,20 @@ I use Ag for searching.
   :ensure-system-package (typescript-language-server . "npm i -g typescript-language-server")
   :ensure-system-package (tsc . "npm i -g typescript")
   :hook(typescript-mode . add-node-modules-path)
-  :defer t) ; TypeScript
+  :defer t)
 #+end_src
 
 *** Web
 #+begin_src emacs-lisp
 (use-package web-mode
   :ensure-system-package (html-languageserver . "npm install -g vscode-html-languageserver-bin")
-  :defer t) ; General web development
+  :defer t)
 #+end_src
 *** YAML
 #+begin_src emacs-lisp
 (use-package yaml-mode
   :ensure-system-package (yaml-language-server . "npm install -g yaml-language-server")
-  :defer t) ; YAML file
+  :defer t)
 #+end_src
 
 ** Language Server Protocol (LSP)
@@ -709,7 +719,7 @@ I use Ag for searching.
   (setq lsp-file-watch-threshold 40000) ; it's not uncommon to have a large node_modules/
   (setq lsp-idle-delay 0.2)
   (setq lsp-log-io nil)
-  (setq lsp-enable-symbo-highlighting t)
+  (setq lsp-enable-symbol-highlighting t)
   (lsp-enable-which-key-integration t)) ; Setting to true will have large performance hit
 
 (use-package lsp-ivy
