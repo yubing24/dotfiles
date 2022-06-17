@@ -1,5 +1,24 @@
 * System Configuration
 
+** Auto-saved, Temporary & Private Files
+#+begin_src emacs-lisp
+;; Set up auto-save directory
+(unless (file-exists-p (concat user-emacs-directory "/backups"))
+  (make-directory (concat user-emacs-directory "/backups")))
+;; Save back upfiles to the auto-save directory
+(setq backup-directory-alist
+      `(("." . ,(concat user-emacs-directory "backups"))))
+
+;; Auto save
+;; File backups
+(setq history-length 100
+      backup-inhibited nil
+      make-backup-files t
+      audo-save-default t
+      create-lockfiles nil)
+
+#+end_src
+
 ** Garbage Collection
 #+BEGIN_SRC emacs-lisp
 (setq gc-cons-threshold (* 10 1024 1024)) ;; 10 MB
@@ -22,6 +41,14 @@
 (set-selection-coding-system 'utf-8)
 (prefer-coding-system        'utf-8)
 (setq default-process-coding-system '(utf-8-unix . utf-8-unix))
+#+end_src
+
+** SSL
+Sometimes Emacs would hang, or cannot download packages from server. It's likely caused by
+SSL algorithms issues. Make this settings here just to specify the algorithm.
+#+begin_src emacs-lisp
+(setq gnutls-algorithm-priority "normal:-vers-tls1.3")
+
 #+end_src
 
 ** Package Management
@@ -163,6 +190,7 @@ Use a better looking header system. Bullets is a bit old.
 *** Start-up
 Disable start up screen and message
 #+begin_src emacs-lisp
+
 ;; Disable default start-up message
 (setq inhibit-startup-message t)
 
@@ -279,7 +307,8 @@ Disable the annoying blinking when emacs trying to hint me that something is not
 *** Interactive Prompt
 #+begin_src emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
-(setq confirm-kill-emacs 'y-or-n-p)
+(setq confirm-kill-emacs 'y-or-n-p
+      confirm-nonexistent-file-or-buffer t)
 #+end_src
 
 *** Exit Interactive Prompt
@@ -396,13 +425,28 @@ Emacs does not have the "normal" editing behavior. Here are some configurations 
 
 * Navigation
 Customization for navigating within Emacs.
-
-** Ace Window - Jumping between windows
+** Window Management
+*** Ace Window - Jumping between windows
 #+begin_src emacs-lisp
 (use-package ace-window
   :diminish
   :config
   (global-set-key (kbd "M-o") 'ace-window))
+#+end_src
+*** Winner Mode
+Winner mode let me go back to my previous window configuration.
+#+begin_src emacs-lisp
+(winner-mode 1)
+#+end_src
+*** Wind Move
+This allows me to use Shift+Arrow keys to navigate between windows.
+#+begin_src emacs-lisp
+(when (fboundp 'windmove-default-keybindings)
+  (windmove-default-keybindings))
+(global-set-key (kbd "C-c <left>")  'windmove-left)
+(global-set-key (kbd "C-c <right>") 'windmove-right)
+(global-set-key (kbd "C-c <up>")    'windmove-up)
+(global-set-key (kbd "C-c <down>")  'windmove-down)
 #+end_src
 
 ** Search
@@ -462,20 +506,31 @@ I use Ag for searching.
 
 * Dashboard
 #+begin_src emacs-lisp
+;; Install related dependenceis
+(use-package page-break-lines
+  :demand t)
+
 (use-package dashboard
-  :diminish
+  :after page-break-lines
   :config
   (dashboard-setup-startup-hook)
+  (setq dashboard-banner-logo-title "Dashboard")
   (setq dashboard-center-content t)
+  (setq dashboard-page-separator "\n\f\n")
   (setq dashboard-set-footer nil)
   (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-heading-icons nil)
+  (setq dashboard-set-navigator t)
   (setq dashboard-startup-banner 'logo)
   (setq dashboard-set-file-icons t)
   (setq dashboard-banner-logo-title "")
-  (setq dashboard-items '((recents . 10)
-			  (projects . 10)
-			  (agenda . 10))))
+  (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
+  (setq dashboard-items '((recents . 5)
+			  (projects . 5)
+			  (agenda . 5)
+			  (bookmarks . 5))))
+;; If Emacs is started as a client, go to the dashboard buffer on start up
+(setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
 
 * Version Control
