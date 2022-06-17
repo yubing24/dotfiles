@@ -205,7 +205,7 @@ Use a better looking header system. Bullets is a bit old.
 *** Languages
 Load supported languages
 #+begin_src emacs-lisp
-(org-babel-do-load-language
+(org-babel-do-load-languages
  'org-babel-load-languages
  '((C . t)
    (css . t)
@@ -567,14 +567,12 @@ I use Ag for searching.
   (dashboard-setup-startup-hook)
   (setq dashboard-banner-logo-title "Dashboard")
   (setq dashboard-center-content t)
-  (setq dashboard-page-separator "\n\f\n")
   (setq dashboard-set-footer nil)
   (setq dashboard-projects-backend 'projectile)
   (setq dashboard-set-heading-icons nil)
   (setq dashboard-set-navigator t)
-  (setq dashboard-startup-banner 'logo)
+  (setq dashboard-startup-banner nil)
   (setq dashboard-set-file-icons t)
-  (setq dashboard-banner-logo-title "")
   (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
   (setq dashboard-items '((recents . 5)
 			  (projects . 5)
@@ -598,20 +596,37 @@ I use Ag for searching.
 * Development
 
 ** Programming Languages & Frameworks
+
+*** Angular 2+
 #+begin_src emacs-lisp
 ;; Angular 2+
 (use-package ng2-mode
   :defer t)
+#+end_src
 
+*** Dockerfile
+#+begin_src emacs-lisp
 (use-package dockerfile-mode
-  :ensure-system-package (dockerfile-language-server-nodejs . "npm i -g dockerfile-language-server-nodejs")
+  :ensure-system-package (dockerfile-language-server-nodejs . "npm i -g dockerfile-language-server-nodejs@latest")
   :defer t)
+#+end_src
+
+*** Go
+#+begin_src emacs-lisp
 (use-package go-mode
   :ensure-system-package (gopls . "go install golang.org/x/tools/gopls@latest")
   :defer t) ; GoLang
+#+end_src
+
+*** GraphQL
+#+begin_src emacs-lisp
 (use-package graphql-mode
-  :ensure-system-package (graphql-language-service-cli . "npm i -g graphql-language-service-cli")
+  :ensure-system-package (graphql-lsp . "npm i -g graphql-language-service-cli@latest")
   :defer t)
+#+end_src
+
+*** JavaScript
+#+begin_src emacs-lisp
 (use-package js2-mode
   :hook add-node-modules-path) ; JavaScript
 #+end_src
@@ -633,13 +648,22 @@ I use Ag for searching.
 *** PHP
 #+begin_src emacs-lisp
 (use-package php-mode
-  :ensure-system-package (intelephense . "npm i -g intelephense")
+  :ensure-system-package (intelephense . "npm i -g intelephense@latest")
   :defer t) ; php
+#+end_src
+
+*** Python
+#+begin_src emacs-lisp
 (use-package python-mode) ; Python
+#+end_src
+
+*** SCSS
+#+begin_src emacs-lisp
 (use-package scss-mode
   :ensure-system-package (vscode-css-languageserver-bin . "npm install -g vscode-css-languageserver-bin")
   :defer t)
 #+end_src
+
 *** TypeScript
 #+begin_src emacs-lisp
 (use-package typescript-mode
@@ -651,11 +675,15 @@ I use Ag for searching.
   :hook(typescript-mode . add-node-modules-path)
   :defer t) ; TypeScript
 #+end_src
+
 *** Web
 #+begin_src emacs-lisp
 (use-package web-mode
   :ensure-system-package (vscode-html-languageserver-bin . "npm install -g vscode-html-languageserver-bin")
   :defer t) ; General web development
+#+end_src
+*** YAML
+#+begin_src emacs-lisp
 (use-package yaml-mode
   :ensure-system-package (yaml-language-server . "npm install -g yaml-language-server")
   :defer t) ; YAML file
