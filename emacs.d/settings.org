@@ -641,7 +641,6 @@ I use Ag for searching.
 *** Markdown
 #+begin_src emacs-lisp
 (use-package markdown-mode
-  :ensure-system-package (unified-language-server . "npm i -g unified-language-server")
   :defer t)
 #+end_src
 
@@ -654,7 +653,9 @@ I use Ag for searching.
 
 *** Python
 #+begin_src emacs-lisp
-(use-package python-mode) ; Python
+(use-package python-mode
+  :ensure-system-package (pyls . "pip install python-language-server[all]"))
+(use-package pyenv-mode)
 #+end_src
 
 *** SCSS
@@ -679,7 +680,7 @@ I use Ag for searching.
 *** Web
 #+begin_src emacs-lisp
 (use-package web-mode
-  :ensure-system-package (vscode-html-languageserver-bin . "npm install -g vscode-html-languageserver-bin")
+  :ensure-system-package (html-languageserver . "npm install -g vscode-html-languageserver-bin")
   :defer t) ; General web development
 #+end_src
 *** YAML
@@ -708,6 +709,7 @@ I use Ag for searching.
   (setq lsp-file-watch-threshold 40000) ; it's not uncommon to have a large node_modules/
   (setq lsp-idle-delay 0.2)
   (setq lsp-log-io nil)
+  (setq lsp-enable-symbo-highlighting t)
   (lsp-enable-which-key-integration t)) ; Setting to true will have large performance hit
 
 (use-package lsp-ivy
