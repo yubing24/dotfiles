@@ -16,7 +16,6 @@
       make-backup-files t
       audo-save-default t
       create-lockfiles nil)
-
 #+end_src
 
 ** Garbage Collection
@@ -169,7 +168,16 @@ Install OrgMode first
 (setq org-variable-pitch-mode 1)
 (setq visual-line-mode 0)
 #+end_src
+** Column
+#+begin_src emacs-lisp
+(defun org-mode-visual-fill ()
+  (setq visual-fill-column-width 100
+	visual-fill-column-center-text t)
+	(visual-fill-column-mode 1))
 
+(use-package visual-fill-column
+  :hook (org-mode . org-mode-visual-fill))
+#+end_src
 
 ** Bullets
 Use a better looking header system. Bullets is a bit old.
@@ -401,6 +409,15 @@ sudo apt update && sudo apt upgrade -y
 Make line number visible globally
 #+begin_src emacs-lisp
 (global-display-line-numbers-mode t)
+
+;; Exceptions for displaying line numbers
+(dolist (mode '(org-mode-hook ;; exceptions where line number shall not show
+                term-mode-hook
+                shell-mode-hook
+                treemacs-mode-hook
+                eshell-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
 #+end_src
 
 Column number
@@ -437,8 +454,9 @@ Emacs does not have the "normal" editing behavior. Here are some configurations 
 (delete-selection-mode t) ; Always delet the selected text with a key stroke
 #+end_src
 
-** Refresh buffer when file is changed
+** Refresh buffer
 #+begin_src emacs-lisp
+;; Reload buffer when it is changed by external programs
 (global-auto-revert-mode t)
 #+end_src
 
@@ -784,6 +802,18 @@ Indentation should be 2-character long, and should automatically format when sav
 ** Collection of Ridiculously Useful eXtensions (CRUX)
 #+begin_src emacs-lisp
 (use-package crux)
+#+end_src
+
+** EPUB Reader
+#+begin_src emacs-lisp
+(use-package nov
+  :mode ("\\.epub\\'" . nov-mode))
+(defun nov-font-setup ()
+  (face-remap-add-relative 'variable-pitch :family "Serif"
+			   :height 1.0))
+(add-hook 'nov-mode-hook #'nov-fond-setup)
+(setq nov-text-width t)
+(setq visual-fill-column-center-text t)
 #+end_src
 
 * Key Bindings
