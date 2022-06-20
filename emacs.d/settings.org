@@ -645,6 +645,8 @@ I use Ag for searching.
 #+begin_src emacs-lisp
 (use-package json-mode
   :ensure-system-package (vscode-json-languageserver . "npm i -g vscode-json-languageserver")
+  :init
+  (setq js-indent-level 2)
   :defer t) ;JSON file
 #+end_src
 
