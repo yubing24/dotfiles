@@ -361,7 +361,7 @@ Disable the annoying blinking when emacs trying to hint me that something is not
 *** Bookmark
 #+begin_src emacs-lisp
 (setq bookmark-save-flag t ;; persistent bookmarks
-      bookmark-default-file (concat temporary-file-directory "/bookmarks"))
+      bookmark-default-file (concat user-emacs-directory "/bookmarks"))
 #+end_src
 *** Interactive Prompt
 #+begin_src emacs-lisp
@@ -403,6 +403,12 @@ sudo apt update && sudo apt upgrade -y
 (set-face-attribute 'default nil :font "JetBrains Mono" :height yhou-font-scale)
 (set-face-attribute 'fixed-pitch nil :font "JetBrains Mono" :height yhou-font-scale)
 (set-face-attribute 'variable-pitch nil :font "Ubuntu" :weight 'medium :height yhou-font-scale)
+#+end_src
+
+**** Parenthesis
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 *** Line Number
@@ -795,6 +801,15 @@ Indentation should be 2-character long, and should automatically format when sav
   (projectile-mode +1)
   :bind (("C-c p" . projectile-command-map))
   :custom((projectile-completion-system 'ivy)))
+#+end_src
+
+** Treemacs
+#+begin_src emacs-lisp
+(use-package treemacs)
+(use-package treemacs-projectile)
+(use-package treemacs-icons-dired)
+(use-package treemacs-magit)
+(use-package lsp-treemacs)
 #+end_src
 
 * Other Tools
