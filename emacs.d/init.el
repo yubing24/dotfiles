@@ -1,4 +1,3 @@
-
 ;; init.el - Yubing Hou's Emacs Configuration
 ;;
 ;; Author: Yubing Hou <houyubing24@gmail.com>
@@ -11,10 +10,10 @@
 (setq load-prefer-newer t) ;; Call this before package initialize
 
 ;; Add additional package sources
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/")) ;; MELPA
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/")) ;; MELPA stable versions
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/")) ;; GNU ELPA
-(add-to-list 'package-archives '("nongnu" . "https://elpa.nongnu.org/nongnu/")) ;; Non-GNU packages
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/")) ;; MELPA
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/")) ;; MELPA stable versions
+(add-to-list 'package-archives '("elpa" . "http://elpa.gnu.org/packages/")) ;; GNU ELPA
+(add-to-list 'package-archives '("nongnu" . "http://elpa.nongnu.org/nongnu/")) ;; Non-GNU packages
 
 (package-initialize)
 

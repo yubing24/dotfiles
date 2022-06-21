@@ -101,6 +101,15 @@ Keep the configuration folder clean.
   :diminish)
 #+end_src
 
+** File management API
+#+begin_src emacs-lisp
+(use-package f)
+#+end_src
+
+** String Manipulation API
+#+begin_src emacs-lisp
+(use-package s)
+#+end_src
 ** Keymap Prompt
 #+begin_src emacs-lisp
 (use-package which-key
@@ -193,6 +202,18 @@ Use a better looking header system. Bullets is a bit old.
   (org-superstart-leading-bullet ""))
 #+end_src
 
+** Agenda
+#+begin_src emacs-lisp
+;; Create a directory for org-mode agenda files
+(unless (file-exists-p "~/org/agenda/")
+  (make-directory "~/org/agenda/"))
+
+;; Set org agenda file here. Can expand this list later by appending more items.
+(setq org-agenda-files (list "~/org/agenda/standup.org"
+			     "~/org/agenda/todo.org"
+			     "~/org/agenda/sprint.org")) ;; Org agenda file
+#+end_src
+
 ** Org Babel
 
 *** Packages
@@ -243,6 +264,32 @@ Specify language extensions
 (add-to-list 'org-structure-template-alist '("py" . "src python"))
 (add-to-list 'org-structure-template-alist '("sh" . "src shell"))
 (add-to-list 'org-structure-template-alist '("sql" . "src sql"))
+#+end_src
+** Org Roam
+#+begin_src emacs-lisp
+;; Set up OrgRoam directory. This should not be the same as the regular org file directory
+(unless (file-exists-p "~/OrgRoam")
+  (make-directory  "~/OrgRoam"))
+
+;; Install OrgRoa
+(use-package org-roam
+  :init
+  (setq org-roam-v2-ack t) ;; Prevent the annoying warning message since I never used it before.
+  :custom
+  (org-roam-directory (file-truename "~/OrgRoam/"))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n g" . org-roam-graph)
+         ("C-c n i" . org-roam-node-insert)
+         ("C-c n c" . org-roam-capture)
+         ;; Dailies
+         ("C-c n j" . org-roam-dailies-capture-today))
+  :config
+  ;; If you're using a vertical completion framework, you might want a more informative completion interface
+  (setq org-roam-node-display-template (concat "${title:*} " (propertize "${tags:10}" 'face 'org-tag)))
+  (org-roam-db-autosync-mode)
+  ;; If using org-roam-protocol
+  (require 'org-roam-protocol))
 #+end_src
 * User Interface
 ** Application
@@ -587,6 +634,9 @@ I use Ag for searching.
 (use-package page-break-lines
   :demand t)
 
+;; Spacemacs logo
+(defconst spacemacs-logo (concat user-emacs-directory "spacemacs.png"))
+
 (use-package dashboard
   :after page-break-lines
   :config
@@ -599,7 +649,8 @@ I use Ag for searching.
                                                    :v-adjust -0.05
                                                    :face 'font-lock-keyword-face))
   (setq dashboard-projects-backend 'projectile)
-  (setq dashboard-startup-banner 'official)
+  (setq dashboard-startup-banner spacemacs-logo)
+  (setq dashboard-image-banner-max-height 200)
   (setq dashboard-set-navigator t)
   (setq dashboard-set-file-icons t)
   (setq dashboard-projects-switch-function 'counsel-projectile-switch-project-by-name)
@@ -611,7 +662,9 @@ I use Ag for searching.
   ;; SHow agenda of the week
   (setq dashboard-week-agenda t)
   ;; Add Icons to widget heading
-  (setq dashboard-set-heading-icons t))
+  (setq dashboard-set-heading-icons t)
+  ;; Customize fonts faces
+  (set-face-attribute 'dashboard-items-face nil :font "JetBrains Mono" :height yhou-font-scale))
 ;; If Emacs is started as a client, go to the dashboard buffer on start up
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
@@ -622,6 +675,8 @@ I use Ag for searching.
 #+begin_src emacs-lisp
 (use-package magit
   :diminish)
+(use-package magit-section)
+(use-package magit-filenotify)
 #+end_src
 ** Git Mode
 #+begin_src emacs-lisp
@@ -690,7 +745,7 @@ I use Ag for searching.
 *** Python
 #+begin_src emacs-lisp
 (use-package python-mode
-  :ensure-system-package (pyls . "pip install python-language-server[all]"))
+  :ensure-system-package (pyls . "pip install python-language-server"))
 (use-package pyenv-mode)
 #+end_src
 
@@ -699,6 +754,20 @@ I use Ag for searching.
 (use-package scss-mode
   :ensure-system-package (vscode-css-languageserver-bin . "npm install -g vscode-css-languageserver-bin")
   :defer t)
+#+end_src
+
+*** Shell Script
+#+begin_src emacs-lisp
+(add-to-list 'auto-mode-alist '("\\.bashrc\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.zshrc\\'" . shell-script-mode))
+(add-to-list 'auto-mode-alist '("\\.profile\\'" . shell-script-mode))
+#+end_src
+
+*** SQL
+#+begin_src emacs-lisp
+(use-package emacsql) ;; SQL database front-end
+(use-package emacsql-sqlite3) ;; SQL backend for SQLite3
+(use-package emacsql-mysql) ;; SQL back-end for MySQL
 #+end_src
 
 *** TypeScript
