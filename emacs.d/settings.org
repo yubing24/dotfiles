@@ -664,7 +664,7 @@ I use Ag for searching.
   ;; Add Icons to widget heading
   (setq dashboard-set-heading-icons t)
   ;; Customize fonts faces
-  (set-face-attribute 'dashboard-items-face nil :font "JetBrains Mono" :height yhou-font-scale))
+  (set-face-attribute 'dashboard-items-face nil :height yhou-font-scale))
 ;; If Emacs is started as a client, go to the dashboard buffer on start up
 (setq initial-buffer-choice (lambda () (get-buffer-create "*dashboard*")))
 #+end_src
