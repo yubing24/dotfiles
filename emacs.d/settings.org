@@ -786,6 +786,10 @@ I use Ag for searching.
 #+begin_src emacs-lisp
 (use-package web-mode
   :ensure-system-package (html-languageserver . "npm install -g vscode-html-languageserver-bin")
+  :init
+  (setq web-mode-markup-indent-offset 2) ;; set indentation to 2 spaces in web mode
+  :mode ("\\.jsx\\'" . web-mode)
+  :mode ("\\.tsx\\'" . web-mode)
   :defer t)
 #+end_src
 *** YAML
