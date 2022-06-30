@@ -145,8 +145,9 @@ export PATH="$PATH:/usr/local/lib/nodejs/node-$VERSION-$DISTRO/bin"
 
 # Rust Cargo Executable
 export PATH="$PATH:$HOME/.cargo/bin"
-. "$HOME/.cargo/env"
-
+if [ -f ~/.cargo/env ] ; then
+  . "$HOME/.cargo/env"
+fi
 
 # Python Pip executables
 export PATH="$PATH:$HOME/.local/bin"
