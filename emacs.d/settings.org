@@ -696,7 +696,7 @@ I use Ag for searching.
 *** Dockerfile
 #+begin_src emacs-lisp
 (use-package dockerfile-mode
-  :ensure-system-package (dockerfile-language-server-nodejs . "npm i -g dockerfile-language-server-nodejs@latest")
+  :ensure-system-package (docker-langserver . "npm i -g dockerfile-language-server-nodejs@latest")
   :defer t)
 #+end_src
 
@@ -739,7 +739,16 @@ I use Ag for searching.
 #+begin_src emacs-lisp
 (use-package php-mode
   :ensure-system-package (intelephense . "npm i -g intelephense@latest")
-  :defer t) ; php
+  :mode ("\\.php\\'" . php-mode)
+  :defer t)
+
+;; Format file once it is saved
+(defun format-php-before-save ()
+  "Format PHP file with LSP Buffer Format function when file is saved"
+  (when (eq major-mode 'php-mode)
+      (lsp-format-buffer)))
+
+(add-hook 'before-save-hook #'format-php-before-save)
 #+end_src
 
 *** Python
